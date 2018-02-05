@@ -27,8 +27,8 @@
         android:icon="@drawable/ic_action_recent" />
 
     <item
-        android:title="@string/tab_scan"
-        android:icon="@drawable/ic_action_scan" />
+        android:title="@string/tab_wallet"
+        android:icon="@drawable/ic_action_wallet" />
 
     <item
         android:title="@string/tab_4"
@@ -36,5 +36,5 @@
 
     <item
         android:title="@string/tab_5"
-        android:icon="@drawable/ic_action_me" />
+        android:icon="@drawable/ic_action_settings" />
 </menu>

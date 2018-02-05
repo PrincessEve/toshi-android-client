@@ -10,7 +10,6 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter
 import com.toshi.R
 import com.toshi.extensions.getColorById
-import com.toshi.extensions.startActivity
 import com.toshi.util.SharedPrefsUtil
 import com.toshi.util.SoundManager
 import com.toshi.view.adapter.NavigationAdapter
@@ -54,11 +53,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val tabListener = AHBottomNavigation.OnTabSelectedListener { position, wasSelected ->
-        if (position == SCAN_POSITION) {
-            startActivity<ScannerActivity>()
-            return@OnTabSelectedListener false
-        }
-
         val existingFragment = getExistingFragment(position)
         if (existingFragment == null) {
             transitionToSelectedFragment(position)
