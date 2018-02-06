@@ -23,7 +23,7 @@
     <string name="tab_wallet">Wallet</string>
     <string name="tab_browse">Browse</string>
     <string name="tab_4">Favorites</string>
-    <string name="tab_5">Me</string>
+    <string name="tab_5">Settings</string>
     <string name="send_message">Message…</string>
     <string name="message">Message</string>
     <string name="chat__empty_state">There are no messages, yet!</string>
@@ -332,4 +332,10 @@
     <string name="untitled">Untitled</string>
     <string name="unknown">Unknown</string>
     <string name="init_manager_error">Something went wrong. Please try again</string>
+    <string name="tokens">Tokens</string>
+    <string name="collectibles">Collectibles</string>
+    <string name="wallet_address">Wallet address</string>
+    <string name="my_wallet">My Wallet</string>
+    <string name="copy">Copy</string>
+    <string name="wallet_address_error">Error while fetching wallet address</string>
 </resources>
