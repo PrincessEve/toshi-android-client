@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val EXTRA__ACTIVE_TAB = "active_tab"
         private val CURRENT_ITEM = "current_item"
-        private val SCAN_POSITION = 2
     }
 
     private lateinit var viewModel: MainViewModel

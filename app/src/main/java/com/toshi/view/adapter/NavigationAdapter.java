@@ -28,7 +28,7 @@ import com.toshi.view.fragment.toplevel.BrowseFragment;
 import com.toshi.view.fragment.toplevel.FavoritesFragment;
 import com.toshi.view.fragment.toplevel.MeFragment;
 import com.toshi.view.fragment.toplevel.RecentFragment;
-import com.toshi.view.fragment.toplevel.ScanFragment;
+import com.toshi.view.fragment.toplevel.WalletFragment;
 
 import java.util.ArrayList;
 
@@ -46,7 +46,7 @@ public class NavigationAdapter extends FragmentPagerAdapter {
         fragments.clear();
         fragments.add(new BrowseFragment());
         fragments.add(new RecentFragment());
-        fragments.add(new ScanFragment());
+        fragments.add(new WalletFragment());
         fragments.add(new FavoritesFragment());
         fragments.add(new MeFragment());
     }

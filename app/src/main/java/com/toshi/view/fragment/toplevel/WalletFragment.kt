@@ -15,7 +15,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.toshi.view.activity
+package com.toshi.view.fragment.toplevel
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
@@ -33,7 +33,12 @@ import com.toshi.view.adapter.WalletPagerAdapter
 import com.toshi.viewModel.WalletViewModel
 import kotlinx.android.synthetic.main.fragment_wallet.*
 
-class WalletActivity : Fragment() {
+class WalletFragment : Fragment(), TopLevelFragment {
+    companion object {
+        private const val TAG = "FavoritesFragment"
+    }
+
+    override fun getFragmentTag() = TAG
 
     private lateinit var viewModel: WalletViewModel
 
@@ -67,7 +72,7 @@ class WalletActivity : Fragment() {
     }
 
     private fun initAdapter() {
-        val adapter = WalletPagerAdapter(activity, activity.supportFragmentManager)
+        val adapter = WalletPagerAdapter(activity, childFragmentManager)
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
     }
