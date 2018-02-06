@@ -28,7 +28,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.toshi.R
+import com.toshi.extensions.startActivity
 import com.toshi.extensions.toast
+import com.toshi.view.activity.DepositActivity
 import com.toshi.view.adapter.WalletPagerAdapter
 import com.toshi.viewModel.WalletViewModel
 import kotlinx.android.synthetic.main.fragment_wallet.*
@@ -61,6 +63,7 @@ class WalletFragment : Fragment(), TopLevelFragment {
 
     private fun initClickListeners() {
         copy.setOnClickListener { handleCopyToClipboardClicked() }
+        walletWrapper.setOnClickListener { startActivity<DepositActivity>() }
     }
 
     private fun handleCopyToClipboardClicked() {

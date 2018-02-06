@@ -64,6 +64,7 @@
             android:layout_height="12dp" />
 
         <TextView
+            android:id="@+id/shareWalletAddress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/share_wallet_address"

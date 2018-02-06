@@ -27,6 +27,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.toshi.R
 import com.toshi.extensions.addHorizontalLineDivider
+import com.toshi.extensions.startActivity
+import com.toshi.view.activity.DepositActivity
 import com.toshi.view.adapter.TokenAdapter
 import com.toshi.view.adapter.viewholder.TokenType
 import com.toshi.viewModel.TokenViewModel
@@ -46,6 +48,7 @@ class ERC721Fragment : Fragment() {
         initViewModel()
         initAdapter()
         initObservers()
+        initClickListeners()
     }
 
     private fun initViewModel() {
@@ -82,5 +85,9 @@ class ERC721Fragment : Fragment() {
         emptyState.visibility = View.VISIBLE
         tokens.visibility = View.GONE
         emptyStateTitle.text = getString(R.string.empty_state_collectibles)
+    }
+
+    private fun initClickListeners() {
+        shareWalletAddress.setOnClickListener { startActivity<DepositActivity>() }
     }
 }
