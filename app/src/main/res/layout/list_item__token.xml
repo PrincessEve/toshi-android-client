@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ 	Copyright (c) 2017. Toshi Inc
+  ~
+  ~ 	This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="?selectableItemBackground">
+
+    <android.support.v4.widget.Space
+        android:layout_width="16dp"
+        android:layout_height="0dp" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/avatar"
+        android:layout_width="@dimen/avatar_size_small"
+        android:layout_height="@dimen/avatar_size_small"
+        android:src="@color/placeholder"
+        app:civ_border_width="1dp"
+        app:civ_border_color="@color/divider" />
+
+    <android.support.v4.widget.Space
+        android:layout_width="12dp"
+        android:layout_height="0dp" />
+
+    <!-- ERC20 tokens -->
+
+    <LinearLayout
+        android:id="@+id/erc20Wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/erc20Abbreviation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/textColorPrimary"
+            style="@style/MediumEllipsizeEndStyle"
+            tools:text="ZRX"/>
+
+        <TextView
+            android:id="@+id/erc20Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/textColorPrimary"
+            style="@style/NormalEllipsizeEndStyle"
+            tools:text="0x"/>
+
+    </LinearLayout>
+
+    <!-- ERC721 tokens -->
+
+    <LinearLayout
+        android:id="@+id/erc721Wrapper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/erc721Name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/textColorPrimary"
+            style="@style/NormalEllipsizeEndStyle"
+            tools:text="0x"/>
+
+    </LinearLayout>
+
+    <android.support.v4.widget.Space
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/textColorPrimary"
+        tools:text="2.5459504"/>
+
+    <android.support.v4.widget.Space
+        android:layout_width="@dimen/activity_horizontal_margin"
+        android:layout_height="0dp" />
+
+</LinearLayout>
