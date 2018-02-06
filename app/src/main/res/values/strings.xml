@@ -338,4 +338,8 @@
     <string name="my_wallet">My Wallet</string>
     <string name="copy">Copy</string>
     <string name="wallet_address_error">Error while fetching wallet address</string>
+    <string name="empty_state_tokens">No Tokens Yet</string>
+    <string name="empty_state_collectibles">No Collectibles Yet</string>
+    <string name="empty_state_tokens_message">Share your wallet address to receive money and tokens.</string>
+    <string name="share_wallet_address">Share Wallet Address</string>
 </resources>

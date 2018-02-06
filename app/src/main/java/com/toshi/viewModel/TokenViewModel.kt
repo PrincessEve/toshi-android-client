@@ -35,6 +35,6 @@ class TokenViewModel : ViewModel() {
     }
 
     private fun fetchERC721Tokens() {
-        erc721Tokens.value = listOf("CryptoKitties", "Digimon", "Pokemon")
+        erc721Tokens.value = listOf()
     }
 }

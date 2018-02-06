@@ -64,7 +64,24 @@ class ERC20Fragment : Fragment() {
 
     private fun initObservers() {
         viewModel.erc20Tokens.observe(this, Observer {
-            if (it != null) tokenAdapter.addTokens(it)
+            if (it != null) showTokensOrEmptyState(it)
         })
+    }
+
+    private fun showTokensOrEmptyState(tokens: List<String>) {
+        if (tokens.isNotEmpty()) showAndAddTokens(tokens)
+        else showEmptyStateView()
+    }
+
+    private fun showAndAddTokens(tokenList: List<String>) {
+        tokens.visibility = View.VISIBLE
+        emptyState.visibility = View.GONE
+        tokenAdapter.addTokens(tokenList)
+    }
+
+    private fun showEmptyStateView() {
+        emptyState.visibility = View.VISIBLE
+        tokens.visibility = View.GONE
+        emptyStateTitle.text = getString(R.string.empty_state_tokens)
     }
 }
