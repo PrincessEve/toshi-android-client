@@ -37,7 +37,7 @@ import kotlinx.android.synthetic.main.fragment_wallet.*
 
 class WalletFragment : Fragment(), TopLevelFragment {
     companion object {
-        private const val TAG = "FavoritesFragment"
+        private const val TAG = "WalletFragment"
     }
 
     override fun getFragmentTag() = TAG

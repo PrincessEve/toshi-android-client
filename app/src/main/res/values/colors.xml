@@ -22,6 +22,7 @@
     <color name="windowBackgroundContrast">#E7E7E7</color>
     <color name="colorPrimary">#01C236</color>
     <color name="colorPrimaryDark">#0BA133</color>
+    <color name="colorPrimaryDarkSecondary">#00AE30</color>
     <color name="colorSecondaryDark">#000000</color>
     <color name="colorAccent">#33AFFF</color>
     <color name="textColorPrimary">#000000</color>
