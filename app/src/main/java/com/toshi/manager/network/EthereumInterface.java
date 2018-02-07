@@ -23,6 +23,7 @@ import com.toshi.model.network.GcmRegistration;
 import com.toshi.model.network.SentTransaction;
 import com.toshi.model.network.ServerTime;
 import com.toshi.model.network.SignedTransaction;
+import com.toshi.model.network.ERC20Tokens;
 import com.toshi.model.network.TransactionRequest;
 import com.toshi.model.network.UnsignedTransaction;
 
@@ -59,4 +60,7 @@ public interface EthereumInterface {
     Single<Void> unregisterGcm(
             @Query("timestamp") long timestamp,
             @Body GcmDeregistration gcmDeregistration);
+
+    @GET("/v1/tokens/{id}")
+    Single<ERC20Tokens> getTokens(@Path("id") String walletAddress);
 }

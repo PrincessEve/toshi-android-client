@@ -32,6 +32,7 @@ import com.toshi.model.network.ExchangeRate;
 import com.toshi.model.network.GcmDeregistration;
 import com.toshi.model.network.GcmRegistration;
 import com.toshi.model.network.ServerTime;
+import com.toshi.model.network.ERC20Tokens;
 import com.toshi.model.sofa.Payment;
 import com.toshi.util.CurrencyUtil;
 import com.toshi.util.FileNames;
@@ -135,6 +136,13 @@ public class BalanceManager {
         return EthereumService
                 .getApi()
                 .getBalance(this.wallet.getPaymentAddress())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Single<ERC20Tokens> getERC20Tokens() {
+        return EthereumService
+                .getApi()
+                .getTokens(this.wallet.getPaymentAddress())
                 .subscribeOn(Schedulers.io());
     }
 

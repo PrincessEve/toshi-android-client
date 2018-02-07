@@ -18,9 +18,12 @@
 package com.toshi.crypto.util;
 
 
+import com.toshi.util.LocaleUtil;
+
 import org.spongycastle.util.encoders.Hex;
 
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 
 public class TypeConverter {
 
@@ -102,5 +105,20 @@ public class TypeConverter {
 
     private static boolean isEmptyString(final Object obj) {
         return obj instanceof String && ((String) obj).length() == 0;
+    }
+
+    public static String getHexString(final String value, final int decimals) {
+        final String decimal = StringHexToBigInteger(value).toString();
+        final DecimalFormat nf = new DecimalFormat("#.000000");
+        final String formattedString;
+        if (decimals > 0) {
+            final char separator = LocaleUtil.getDecimalFormatSymbols().getMonetaryDecimalSeparator();
+            final int decimalPosition = decimal.length() - decimals;
+            final String decimalNumberWithDecimals = new StringBuilder(decimal)
+                    .insert(decimalPosition, separator)
+                    .toString();
+            formattedString = nf.format(Double.valueOf(decimalNumberWithDecimals));
+        } else formattedString = nf.format(Double.valueOf(decimal));
+        return formattedString;
     }
 }
