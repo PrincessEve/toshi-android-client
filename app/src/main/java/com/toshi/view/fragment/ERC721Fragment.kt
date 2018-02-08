@@ -28,7 +28,7 @@ import android.view.ViewGroup
 import com.toshi.R
 import com.toshi.extensions.addHorizontalLineDivider
 import com.toshi.extensions.startActivity
-import com.toshi.model.network.ERC20Token
+import com.toshi.model.network.Token
 import com.toshi.view.activity.DepositActivity
 import com.toshi.view.adapter.TokenAdapter
 import com.toshi.view.adapter.viewholder.TokenType
@@ -71,12 +71,12 @@ class ERC721Fragment : Fragment() {
         })
     }
 
-    private fun showTokensOrEmptyState(tokens: List<ERC20Token>) {
+    private fun showTokensOrEmptyState(tokens: List<Token>) {
         if (tokens.isNotEmpty()) showAndAddTokens(tokens)
         else showEmptyStateView()
     }
 
-    private fun showAndAddTokens(tokenList: List<ERC20Token>) {
+    private fun showAndAddTokens(tokenList: List<Token>) {
         tokens.visibility = View.VISIBLE
         emptyState.visibility = View.GONE
         tokenAdapter.addTokens(tokenList)

@@ -19,7 +19,7 @@ package com.toshi.viewModel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.toshi.model.network.ERC20Token
+import com.toshi.model.network.Token
 import com.toshi.util.LogUtil
 import com.toshi.view.BaseApplication
 import rx.android.schedulers.AndroidSchedulers
@@ -30,8 +30,8 @@ class TokenViewModel : ViewModel() {
     private val balanceManager by lazy { BaseApplication.get().balanceManager }
     private val subscriptions by lazy { CompositeSubscription() }
 
-    val erc20Tokens by lazy { MutableLiveData<List<ERC20Token>>() }
-    val erc721Tokens by lazy { MutableLiveData<List<ERC20Token>>() }
+    val erc20Tokens by lazy { MutableLiveData<List<Token>>() }
+    val erc721Tokens by lazy { MutableLiveData<List<Token>>() }
 
     fun fetchERC20Tokens() {
         val sub = balanceManager
@@ -46,7 +46,15 @@ class TokenViewModel : ViewModel() {
     }
 
     fun fetchERC721Tokens() {
-        erc721Tokens.value = emptyList()
+        val sub = balanceManager
+                .getERC721Tokens()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { erc721Tokens.value = it.collectibles },
+                        { LogUtil.e(javaClass, "Error $it") }
+                )
+
+        subscriptions.add(sub)
     }
 
     override fun onCleared() {

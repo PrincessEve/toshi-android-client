@@ -28,6 +28,7 @@ import com.toshi.model.local.Network;
 import com.toshi.model.local.Networks;
 import com.toshi.model.network.Balance;
 import com.toshi.model.network.Currencies;
+import com.toshi.model.network.ERC721Tokens;
 import com.toshi.model.network.ExchangeRate;
 import com.toshi.model.network.GcmDeregistration;
 import com.toshi.model.network.GcmRegistration;
@@ -143,6 +144,13 @@ public class BalanceManager {
         return EthereumService
                 .getApi()
                 .getTokens(this.wallet.getPaymentAddress())
+                .subscribeOn(Schedulers.io());
+    }
+
+    public Single<ERC721Tokens> getERC721Tokens() {
+        return EthereumService
+                .getApi()
+                .getCollectibles(this.wallet.getPaymentAddress())
                 .subscribeOn(Schedulers.io());
     }
 

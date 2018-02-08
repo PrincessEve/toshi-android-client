@@ -17,6 +17,6 @@
 
 package com.toshi.model.network
 
-data class ERC20Tokens(
-        val tokens: List<Token>
+data class ERC721Tokens(
+        val collectibles: List<Token>
 )

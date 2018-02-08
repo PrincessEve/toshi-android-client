@@ -21,15 +21,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.toshi.R
-import com.toshi.model.network.ERC20Token
+import com.toshi.model.network.Token
 import com.toshi.view.adapter.viewholder.TokenType
 import com.toshi.view.adapter.viewholder.TokensViewHolder
 
 class TokenAdapter(private val tokenType: TokenType) : RecyclerView.Adapter<TokensViewHolder>() {
 
-    private val tokens = mutableListOf<ERC20Token>()
+    private val tokens = mutableListOf<Token>()
 
-    fun addTokens(tokens: List<ERC20Token>) {
+    fun addTokens(tokens: List<Token>) {
         this.tokens.clear()
         this.tokens.addAll(tokens)
         notifyDataSetChanged()

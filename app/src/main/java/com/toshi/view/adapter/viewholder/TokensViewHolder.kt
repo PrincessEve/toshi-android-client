@@ -19,34 +19,38 @@ package com.toshi.view.adapter.viewholder
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.toshi.R
 import com.toshi.crypto.util.TypeConverter
-import com.toshi.model.network.ERC20Token
+import com.toshi.extensions.getColorById
+import com.toshi.model.network.Token
 import com.toshi.util.ImageUtil
 import kotlinx.android.synthetic.main.list_item__token.view.*
 
 class TokensViewHolder(private val tokenType: TokenType, itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
-    fun setToken(token: ERC20Token) {
+    fun setToken(token: Token) {
         when (tokenType) {
             is TokenType.ERC20Token -> { showERC20View(token) }
             is TokenType.ERC721Token -> { showERC721View(token) }
         }
     }
 
-    private fun showERC20View(token: ERC20Token) {
+    private fun showERC20View(token: Token) {
         itemView.erc20Wrapper.visibility = View.VISIBLE
         itemView.erc721Wrapper.visibility = View.GONE
         itemView.erc20Name.text = token.name
         itemView.erc20Abbreviation.text = token.symbol
-        itemView.value.text = TypeConverter.getHexString(token.value, token.decimals)
+        itemView.value.text = TypeConverter.getHexString(token.value, token.decimals, "#.000000")
+        itemView.value.setTextColor(itemView.getColorById(R.color.textColorPrimary))
         loadImage(token.icon)
     }
 
-    private fun showERC721View(token: ERC20Token) {
+    private fun showERC721View(token: Token) {
         itemView.erc721Wrapper.visibility = View.VISIBLE
         itemView.erc20Wrapper.visibility = View.GONE
         itemView.erc721Name.text = token.name
-        itemView.value.text = TypeConverter.getHexString(token.value, token.decimals)
+        itemView.value.text = TypeConverter.getHexString(token.value, token.decimals, "0")
+        itemView.value.setTextColor(itemView.getColorById(R.color.textColorSecondary))
         loadImage(token.icon)
     }
 

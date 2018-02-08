@@ -18,6 +18,7 @@
 package com.toshi.manager.network;
 
 import com.toshi.model.network.Balance;
+import com.toshi.model.network.ERC721Tokens;
 import com.toshi.model.network.GcmDeregistration;
 import com.toshi.model.network.GcmRegistration;
 import com.toshi.model.network.SentTransaction;
@@ -63,4 +64,7 @@ public interface EthereumInterface {
 
     @GET("/v1/tokens/{id}")
     Single<ERC20Tokens> getTokens(@Path("id") String walletAddress);
+
+    @GET("/v1/collectibles/{id}")
+    Single<ERC721Tokens> getCollectibles(@Path("id") String walletAddress);
 }

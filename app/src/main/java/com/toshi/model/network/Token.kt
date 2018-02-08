@@ -17,7 +17,7 @@
 
 package com.toshi.model.network
 
-data class ERC20Token(
+data class Token(
         val symbol: String,
         val name: String,
         val decimals: Int,
