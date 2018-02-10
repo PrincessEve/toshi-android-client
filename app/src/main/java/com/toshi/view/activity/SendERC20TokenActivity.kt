@@ -28,6 +28,7 @@ import android.support.v7.app.AppCompatActivity
 import com.toshi.R
 import com.toshi.crypto.util.TypeConverter
 import com.toshi.crypto.util.isPaymentAddressValid
+import com.toshi.extensions.isVisible
 import com.toshi.extensions.startActivityForResult
 import com.toshi.extensions.toast
 import com.toshi.manager.model.PaymentTask
@@ -103,12 +104,18 @@ class SendERC20TokenActivity : AppCompatActivity() {
     }
 
     private fun validateAddressAndShowPaymentConfirmation() {
+        addressError.isVisible(false)
         token?.let {
             val address = toAddress.text.toString()
             val transferValue = toAmount.text.toString()
             if (isPaymentAddressValid(address)) showPaymentConfirmation(it, transferValue, address)
             else toast(R.string.invalid_payment_address)
         } ?: toast(R.string.invalid_token)
+    }
+
+    private fun showAddressError() {
+        addressError.isVisible(true)
+        addressError.text = getString(R.string.invalid_payment_address)
     }
 
     private fun showPaymentConfirmation(token: Token, value: String, toAddress: String) {
