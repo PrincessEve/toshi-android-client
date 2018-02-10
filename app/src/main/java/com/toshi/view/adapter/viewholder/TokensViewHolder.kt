@@ -47,7 +47,7 @@ class TokensViewHolder(private val tokenType: TokenType, itemView: View?) : Recy
         itemView.erc721Wrapper.visibility = View.GONE
         itemView.erc20Name.text = token.name
         itemView.erc20Abbreviation.text = token.symbol
-        itemView.value.text = TypeConverter.formatHexString(token.value, token.decimals, "#.000000")
+        itemView.value.text = TypeConverter.formatHexString(token.value, token.decimals, "0.000000")
         itemView.value.setTextColor(itemView.getColorById(R.color.textColorPrimary))
         ImageUtil.load(token.icon, itemView.avatar)
     }
