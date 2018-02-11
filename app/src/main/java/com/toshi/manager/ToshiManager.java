@@ -26,6 +26,8 @@ import com.toshi.util.LogUtil;
 import com.toshi.util.SharedPrefsUtil;
 import com.toshi.view.BaseApplication;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -86,7 +88,7 @@ public class ToshiManager {
                 .subscribeOn(Schedulers.from(this.singleExecutor));
     }
 
-    public Completable init(final HDWallet wallet) {
+    public Completable init(@NotNull final HDWallet wallet) {
         this.setWallet(wallet);
         return initManagers()
                 .doOnError(__ -> clearUserData())
@@ -111,6 +113,9 @@ public class ToshiManager {
     }
 
     private Completable initManagers() {
+        if (this.wallet == null) {
+            LogUtil.e(getClass(), "Cannot initialize managers while wallet is null.");
+        }
         if (this.areManagersInitialised) return Completable.complete();
         return Completable.fromAction(() -> {
             initRealm();

@@ -35,6 +35,7 @@ import com.toshi.view.activity.SignInActivity;
 import com.toshi.view.activity.SignInInfoActivity;
 
 import org.bitcoinj.crypto.MnemonicCode;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -169,7 +170,7 @@ public class SignInPresenter implements Presenter<SignInActivity> {
         this.activity.getBinding().loadingSpinner.setVisibility(View.VISIBLE);
     }
 
-    private Completable initWallet(final HDWallet wallet) {
+    private Completable initWallet(@NotNull final HDWallet wallet) {
         return BaseApplication
                 .get()
                 .getToshiManager()
