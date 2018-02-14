@@ -28,7 +28,7 @@ import android.util.AttributeSet;
 import com.toshi.R;
 
 public class SuffixEditText extends AppCompatEditText {
-    final TextPaint textPaint = new TextPaint();
+    TextPaint textPaint;
     float fontHeight;
     String suffix = "";
 
@@ -43,6 +43,7 @@ public class SuffixEditText extends AppCompatEditText {
     }
 
     private void init() {
+        if (textPaint == null) textPaint = new TextPaint();
         fontHeight = getTextSize();
         textPaint.setColor(getCurrentHintTextColor());
         textPaint.setTextSize(fontHeight);
@@ -50,10 +51,10 @@ public class SuffixEditText extends AppCompatEditText {
     }
 
     @Override
-    public void setTypeface(final Typeface typeface){
-        super.setTypeface(typeface);
+    public void setTypeface(final Typeface typeface) {
         if (textPaint != null) textPaint.setTypeface(typeface);
         postInvalidate();
+        super.setTypeface(typeface);
     }
 
     public void setSuffix(final String suffix) {
@@ -62,11 +63,12 @@ public class SuffixEditText extends AppCompatEditText {
 
     @Override
     public void onDraw(final Canvas canvas) {
-        super.onDraw(canvas);
         final String text = getText().length() > 0
                 ? getText().toString()
                 : getContext().getString(R.string._0_0);
+
         final int x = (int) textPaint.measureText(text) + getPaddingLeft();
         canvas.drawText(suffix, x, getBaseline(), textPaint);
+        super.onDraw(canvas);
     }
 }

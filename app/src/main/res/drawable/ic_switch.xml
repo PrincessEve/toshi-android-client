@@ -17,19 +17,27 @@
   -->
 
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:width="14dp"
+    android:height="20dp"
+    android:viewportWidth="14"
+    android:viewportHeight="20">
 
-    <path
-        android:fillColor="#9B9DA4"
-        android:strokeWidth="1"
-        android:pathData="M18.01,14 L11,14 L11,16 L18.01,16 L18.01,19 L22,15 L18.01,11 L18.01,14 Z
-M5.99,13 L5.99,10 L13,10 L13,8 L5.99,8 L5.99,5 L2,9 L5.99,13 Z" />
-    <path
-        android:fillColor="#9B9DA4"
-        android:strokeWidth="1"
-        android:pathData="M18.01,14 L11,14 L11,16 L18.01,16 L18.01,19 L22,15 L18.01,11 L18.01,14 Z
-M5.99,13 L5.99,10 L13,10 L13,8 L5.99,8 L5.99,5 L2,9 L5.99,13 Z" />
+    <group
+        android:translateX="-602.000000"
+        android:translateY="-685.000000">
+        <group
+            android:translateX="602.000000"
+            android:translateY="685.000000">
+            <path
+                android:fillColor="#9B9DA4"
+                android:strokeWidth="1"
+                android:pathData="M9,3.99 L9,11 L11,11 L11,3.99 L14,3.99 L10,0 L6,3.99 L9,3.99 Z M8,16.01 L5,16.01
+L5,9 L3,9 L3,16.01 L0.000000000000000244317036,16.01 L4,20 L8,16.01 Z" />
+            <path
+                android:fillColor="#9B9DA4"
+                android:strokeWidth="1"
+                android:pathData="M9,3.99 L9,11 L11,11 L11,3.99 L14,3.99 L10,0 L6,3.99 L9,3.99 Z M8,16.01 L5,16.01
+L5,9 L3,9 L3,16.01 L0.000000000000000244317036,16.01 L4,20 L8,16.01 Z" />
+        </group>
+    </group>
 </vector>

@@ -40,4 +40,9 @@
         <attr name="buttonText" format="string"/>
         <attr name="textColor" format="color"/>
     </declare-styleable>
+
+    <declare-styleable name="PaddingButton">
+        <attr name="paddingButtonText" format="string"/>
+        <attr name="paddingButtonImage" format="integer"/>
+    </declare-styleable>
 </resources>

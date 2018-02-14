@@ -350,7 +350,7 @@
     <string name="hex_hint">0x…</string>
     <string name="to_address">To</string>
     <string name="paste">Paste</string>
-    <string name="max">Max.</string>
+    <string name="max">Max</string>
     <string name="_0_0">0.0</string>
     <string name="invalid_token">Invalid token</string>
 </resources>

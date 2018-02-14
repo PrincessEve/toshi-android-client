@@ -75,12 +75,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:textSize="14sp"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/amount"/>
+                android:textColor="@color/textColorSecondaryTransparent"
+                android:textAllCaps="true"
+                android:text="@string/amount"
+                style="@style/TextStyleMedium"/>
 
             <android.support.v4.widget.Space
                 android:layout_width="0dp"
-                android:layout_height="12dp" />
+                android:layout_height="14dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -107,27 +109,25 @@
                     android:layout_width="8dp"
                     android:layout_height="0dp" />
 
-                <Button
+                <com.toshi.view.custom.PaddingButton
                     android:id="@+id/max"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    style="@style/FlatButton"
-                    android:stateListAnimator="@null"
-                    android:textSize="14sp"
-                    android:textAllCaps="true"
-                    android:textColor="@color/textColorPrimary"
-                    android:text="@string/max"
-                    android:background="@drawable/background_with_radius_border"/>
+                    android:layout_height="40dp"
+                    android:background="@drawable/background_with_circle_corners"
+                    android:paddingLeft="17dp"
+                    android:paddingRight="17dp"
+                    app:paddingButtonText="@string/max"/>
 
-                <ImageButton
+                <com.toshi.view.custom.PaddingButton
                     android:id="@+id/currencySwitcher"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="6dp"
-                    android:layout_marginLeft="8dp"
-                    android:background="@drawable/background_with_radius_border"
-                    app:srcCompat="@drawable/ic_rotated_switch"
-                    style="@style/closeButtonStyle"
+                    android:layout_height="40dp"
+                    android:background="@drawable/background_with_circle_corners"
+                    android:paddingLeft="17dp"
+                    android:paddingRight="17dp"
+                    android:layout_marginLeft="5dp"
+                    app:paddingButtonImage="@drawable/ic_switch"
+                    app:paddingButtonText=""
                     android:visibility="gone"/>
 
                 <android.support.v4.widget.Space
@@ -144,8 +144,10 @@
                 android:layout_marginTop="12dp"
                 android:textSize="16sp"
                 android:textColor="@color/textColorPrimary"
+                android:textStyle="bold"
                 tools:text="$0.00 USD"
-                android:visibility="gone"/>
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
             <android.support.v4.widget.Space
                 android:layout_width="0dp"
@@ -159,6 +161,18 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:textColor="@color/textColorSecondary"
                 tools:text="Your balance: 1000 ETH ($1.690.89 USD)"/>
+
+            <TextView
+                android:id="@+id/amountError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="10dp"
+                android:textSize="13sp"
+                android:textColor="@color/error_color"
+                tools:text="You can only send tokens to an Ethereum address."
+                android:visibility="gone"
+                tools:visibility="visible"/>
 
             <android.support.v4.widget.Space
                 android:layout_width="0dp"
@@ -178,8 +192,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:textSize="14sp"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/to_address"/>
+                android:textColor="@color/textColorSecondaryTransparent"
+                android:textAllCaps="true"
+                android:text="@string/to_address"
+                style="@style/TextStyleMedium"/>
 
             <EditText
                 android:id="@+id/toAddress"
@@ -195,6 +211,7 @@
                 android:inputType="textNoSuggestions"
                 android:textColor="@color/textColorPrimary"
                 android:textColorHint="@color/textColorHint"
+                style="@style/TextStyleMedium"
                 android:hint="@string/hex_hint"
                 android:background="@null"/>
 
@@ -212,7 +229,7 @@
 
             <android.support.v4.widget.Space
                 android:layout_width="0dp"
-                android:layout_height="20dp" />
+                android:layout_height="15dp" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -220,30 +237,28 @@
                 android:orientation="horizontal"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin">
 
-                <Button
+                <com.toshi.view.custom.PaddingButton
                     android:id="@+id/paste"
                     android:layout_width="wrap_content"
-                    android:layout_height="36dp"
-                    style="@style/FlatButton"
-                    android:stateListAnimator="@null"
-                    android:textAllCaps="true"
-                    android:textSize="14sp"
-                    android:textColor="@color/textColorPrimary"
-                    android:text="@string/paste"
-                    android:background="@drawable/background_with_radius_border"/>
+                    android:layout_height="40dp"
+                    android:background="@drawable/background_with_circle_corners"
+                    android:paddingLeft="17dp"
+                    android:paddingRight="17dp"
+                    app:paddingButtonText="@string/paste"/>
 
                 <android.support.v4.widget.Space
                     android:layout_width="8dp"
                     android:layout_height="0dp" />
 
-                <ImageButton
+                <com.toshi.view.custom.PaddingButton
                     android:id="@+id/qrCodeBtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="6dp"
-                    app:srcCompat="@drawable/ic_scan_qr_code"
-                    android:background="@drawable/background_with_radius_border"
-                    style="@style/closeButtonStyle" />
+                    android:layout_height="40dp"
+                    android:background="@drawable/background_with_circle_corners"
+                    android:paddingLeft="17dp"
+                    android:paddingRight="17dp"
+                    app:paddingButtonImage="@drawable/ic_scan_qr_code"
+                    app:paddingButtonText="@string/scan_qr"/>
 
             </LinearLayout>
 
