@@ -18,6 +18,8 @@
 package com.toshi.crypto.util;
 
 
+import android.support.annotation.Nullable;
+
 import com.toshi.util.LocaleUtil;
 
 import org.spongycastle.util.encoders.Hex;
@@ -107,9 +109,10 @@ public class TypeConverter {
         return obj instanceof String && ((String) obj).length() == 0;
     }
 
-    public static String formatHexString(final String value, final int decimals, final String format) {
+    // Set pattern to null if you want the original format
+    public static String formatHexString(final String value, final int decimals, @Nullable final String pattern) {
         final String decimal = StringHexToBigInteger(value).toString();
-        final DecimalFormat nf = new DecimalFormat(format);
+        final DecimalFormat nf = pattern != null ? new DecimalFormat(pattern) : null;
         final String formattedString;
         if (decimals > 0) {
             final char separator = LocaleUtil.getDecimalFormatSymbols().getMonetaryDecimalSeparator();
@@ -117,8 +120,8 @@ public class TypeConverter {
             final String decimalNumberWithDecimals = new StringBuilder(decimal)
                     .insert(decimalPosition, separator)
                     .toString();
-            formattedString = nf.format(Double.valueOf(decimalNumberWithDecimals));
-        } else formattedString = nf.format(Double.valueOf(decimal));
+            formattedString = nf != null ? nf.format(Double.valueOf(decimalNumberWithDecimals)) : decimalNumberWithDecimals;
+        } else formattedString = nf != null ? nf.format(Double.valueOf(decimal)) : decimal;
         return formattedString;
     }
 }
