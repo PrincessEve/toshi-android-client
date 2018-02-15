@@ -66,8 +66,7 @@ data class ERCToken(
         private fun hasAllExtras(intent: Intent): Boolean {
             return intent.hasExtra(SYMBOL) && intent.hasExtra(NAME)
                     && intent.hasExtra(DECIMALS) && intent.hasExtra(VALUE)
-                    && intent.hasExtra(CONTRACT_ADDRESS) && intent.hasExtra(FORMAT)
-                    && intent.hasExtra(ICON)
+                    && intent.hasExtra(CONTRACT_ADDRESS) && intent.hasExtra(ICON)
         }
     }
 }

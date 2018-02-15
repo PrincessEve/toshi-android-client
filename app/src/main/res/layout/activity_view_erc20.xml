@@ -87,6 +87,19 @@
 
         <android.support.v4.widget.Space
             android:layout_width="0dp"
+            android:layout_height="5dp" />
+
+        <TextView
+            android:id="@+id/fiat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/textColorSecondary"
+            android:textSize="16sp"
+            tools:text="$1.4 USD"
+            android:visibility="gone"/>
+
+        <android.support.v4.widget.Space
+            android:layout_width="0dp"
             android:layout_height="40dp" />
 
         <LinearLayout

@@ -21,13 +21,22 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.toshi.R
 import com.toshi.crypto.util.TypeConverter
+import com.toshi.extensions.isVisible
 import com.toshi.extensions.startActivity
 import com.toshi.extensions.toast
-import com.toshi.model.network.Token
+import com.toshi.model.network.token.ERCToken
+import com.toshi.model.network.token.EtherToken
+import com.toshi.model.network.token.Token
 import com.toshi.util.ImageUtil
 import kotlinx.android.synthetic.main.activity_view_erc20.*
 
 class ViewERC20Activity : AppCompatActivity() {
+
+    companion object {
+        const val ETHER_TOKEN = "ether_token"
+        const val ERC20_TOKEN = "erc_token"
+        const val TOKEN_TYPE = "type"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,25 +45,61 @@ class ViewERC20Activity : AppCompatActivity() {
     }
 
     private fun init() {
-        val token = Token.getTokenFromIntent(intent)
-        if (token == null) {
+        val tokenType = intent.getStringExtra(TOKEN_TYPE)
+        when (tokenType) {
+            ETHER_TOKEN -> initEtherView()
+            ERC20_TOKEN -> initERC20View()
+        }
+    }
+
+    private fun initEtherView() {
+        val etherToken = EtherToken.getTokenFromIntent(intent)
+        if (etherToken == null) {
             toast(R.string.invalid_token)
             finish()
             return
         }
-        renderUi(token)
-        initClickListeners(token)
+        renderEtherTokenUi(etherToken)
+        initClickListeners(etherToken)
     }
 
-    private fun renderUi(token: Token) {
-        toolbarTitle.text = token.name
-        ImageUtil.load(token.icon, avatar)
-        amount.text = TypeConverter.formatHexString(token.value, token.decimals, "0.000000")
+    private fun initERC20View() {
+        val erc20Token = ERCToken.getTokenFromIntent(intent)
+        if (erc20Token == null) {
+            toast(R.string.invalid_token)
+            finish()
+            return
+        }
+        renderERCTokenUi(erc20Token)
+        initClickListeners(erc20Token)
+    }
+
+    private fun renderEtherTokenUi(etherToken: EtherToken) {
+        toolbarTitle.text = etherToken.name
+        amount.text = getString(R.string.eth_balance, etherToken.etherValue)
+        fiat.text = etherToken.fiatValue
+        fiat.isVisible(true)
+        //ImageUtil.load(etherToken.icon, avatar)
+    }
+
+    private fun renderERCTokenUi(ERCToken: ERCToken) {
+        toolbarTitle.text = ERCToken.name
+        ImageUtil.load(ERCToken.icon, avatar)
+        val tokenAmount = TypeConverter.formatHexString(ERCToken.value, ERCToken.decimals, "0.000000")
+        amount.text = "$tokenAmount ${ERCToken.symbol}"
     }
 
     private fun initClickListeners(token: Token) {
         closeButton.setOnClickListener { finish() }
         receive.setOnClickListener {}
-        send.setOnClickListener { startActivity<SendERC20TokenActivity> { Token.buildIntent(this, token) } }
+        send.setOnClickListener { startSendActivity(token) }
+    }
+
+    private fun startSendActivity(token: Token) {
+        when (token) {
+            is EtherToken -> startActivity<SendETHActivity> { EtherToken.buildIntent(this, token) }
+            is ERCToken -> startActivity<SendERC20TokenActivity> { ERCToken.buildIntent(this, token) }
+            else -> throw IllegalStateException(Throwable("Invalid token in this context"))
+        }
     }
 }

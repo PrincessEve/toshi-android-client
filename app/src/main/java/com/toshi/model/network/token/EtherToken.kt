@@ -49,13 +49,19 @@ data class EtherToken(
             }
         }
 
-        fun getTokenFromIntent(intent: Intent): EtherToken {
+        fun getTokenFromIntent(intent: Intent): EtherToken? {
+            if (!hasAllExtras(intent)) return null
             return EtherToken(
                     intent.getStringExtra(SYMBOL),
                     intent.getStringExtra(NAME),
                     intent.getStringExtra(ETHER_VALUE),
                     intent.getStringExtra(FIAT_VALUE)
             )
+        }
+
+        private fun hasAllExtras(intent: Intent): Boolean {
+            return intent.hasExtra(SYMBOL) && intent.hasExtra(NAME) &&
+                    intent.hasExtra(ETHER_VALUE) && intent.hasExtra(FIAT_VALUE)
         }
     }
 }
