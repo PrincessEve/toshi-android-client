@@ -117,6 +117,7 @@
         <activity android:name=".view.activity.EditGroupActivity" />
         <activity android:name=".view.activity.webView.LollipopWebViewActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".view.activity.ViewERC20Activity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"

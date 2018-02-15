@@ -28,6 +28,8 @@ import com.toshi.view.adapter.viewholder.TokensViewHolder
 class TokenAdapter(private val tokenType: TokenType) : RecyclerView.Adapter<TokensViewHolder>() {
 
     private val tokens = mutableListOf<Token>()
+    var ERC20Listener: ((Token) -> Unit)? = null
+    var ERC721Listener: ((Token) -> Unit)? = null
 
     fun addTokens(tokens: List<Token>) {
         this.tokens.clear()
@@ -43,7 +45,7 @@ class TokenAdapter(private val tokenType: TokenType) : RecyclerView.Adapter<Toke
 
     override fun onBindViewHolder(holder: TokensViewHolder?, position: Int) {
         val token = tokens[position]
-        holder?.setToken(token)
+        holder?.setToken(token, ERC20Listener, ERC721Listener)
     }
 
     override fun getItemCount() = tokens.size

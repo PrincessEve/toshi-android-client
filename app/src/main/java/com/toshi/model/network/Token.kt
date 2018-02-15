@@ -17,12 +17,51 @@
 
 package com.toshi.model.network
 
+import android.content.Intent
+import com.squareup.moshi.Json
+
 data class Token(
         val symbol: String,
         val name: String,
         val decimals: Int,
         val value: String,
-        val contract_address: String,
+        @Json(name = "contract_address")
+        val contractAddress: String,
         val format: String,
         val icon: String
-)
+) {
+
+    companion object {
+        private const val SYMBOL = "symbol"
+        private const val NAME = "name"
+        private const val DECIMALS = "decimals"
+        private const val VALUE = "value"
+        private const val CONTRACT_ADDRESS = "contract_address"
+        private const val FORMAT = "format"
+        private const val ICON = "format"
+
+        fun buildIntent(intent: Intent, token: Token): Intent {
+            return intent.apply {
+                putExtra(SYMBOL, token.symbol)
+                putExtra(NAME, token.name)
+                putExtra(DECIMALS, token.decimals)
+                putExtra(VALUE, token.value)
+                putExtra(CONTRACT_ADDRESS, token.contractAddress)
+                putExtra(FORMAT, token.format)
+                putExtra(ICON, token.icon)
+            }
+        }
+
+        fun getTokenFromIntent(intent: Intent): Token {
+            return Token(
+                    intent.getStringExtra(SYMBOL),
+                    intent.getStringExtra(NAME),
+                    intent.getIntExtra(DECIMALS, 0),
+                    intent.getStringExtra(VALUE),
+                    intent.getStringExtra(CONTRACT_ADDRESS),
+                    intent.getStringExtra(FORMAT),
+                    intent.getStringExtra(ICON)
+            )
+        }
+    }
+}

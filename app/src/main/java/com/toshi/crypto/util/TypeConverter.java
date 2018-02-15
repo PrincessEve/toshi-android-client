@@ -107,7 +107,7 @@ public class TypeConverter {
         return obj instanceof String && ((String) obj).length() == 0;
     }
 
-    public static String getHexString(final String value, final int decimals, final String format) {
+    public static String formatHexString(final String value, final int decimals, final String format) {
         final String decimal = StringHexToBigInteger(value).toString();
         final DecimalFormat nf = new DecimalFormat(format);
         final String formattedString;

@@ -30,6 +30,7 @@ import com.toshi.extensions.addHorizontalLineDivider
 import com.toshi.extensions.startActivity
 import com.toshi.model.network.Token
 import com.toshi.view.activity.DepositActivity
+import com.toshi.view.activity.ViewERC20Activity
 import com.toshi.view.adapter.TokenAdapter
 import com.toshi.view.adapter.viewholder.TokenType
 import com.toshi.viewModel.TokenViewModel
@@ -63,6 +64,9 @@ class ERC20Fragment : Fragment() {
             layoutManager = LinearLayoutManager(activity)
             adapter = tokenAdapter
             addHorizontalLineDivider()
+        }
+        tokenAdapter.ERC20Listener = {
+            startActivity<ViewERC20Activity> { Token.buildIntent(this, it) }
         }
     }
 

@@ -28,10 +28,17 @@ import kotlinx.android.synthetic.main.list_item__token.view.*
 
 class TokensViewHolder(private val tokenType: TokenType, itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
-    fun setToken(token: Token) {
+    fun setToken(token: Token, ERC20Listener: ((Token) -> Unit)?, ERC721Listener: ((Token) -> Unit)?) {
         when (tokenType) {
-            is TokenType.ERC20Token -> { showERC20View(token) }
-            is TokenType.ERC721Token -> { showERC721View(token) }
+            is TokenType.ERC20Token -> {
+                showERC20View(token)
+                setOnERC20ClickListeners(token, ERC20Listener)
+            }
+            is TokenType.ERC721Token -> {
+                showERC721View(token)
+                ERC721Listener?.invoke(token)
+                setOnERC721ClickListeners(token, ERC721Listener)
+            }
         }
     }
 
@@ -40,22 +47,26 @@ class TokensViewHolder(private val tokenType: TokenType, itemView: View?) : Recy
         itemView.erc721Wrapper.visibility = View.GONE
         itemView.erc20Name.text = token.name
         itemView.erc20Abbreviation.text = token.symbol
-        itemView.value.text = TypeConverter.getHexString(token.value, token.decimals, "#.000000")
+        itemView.value.text = TypeConverter.formatHexString(token.value, token.decimals, "#.000000")
         itemView.value.setTextColor(itemView.getColorById(R.color.textColorPrimary))
-        loadImage(token.icon)
+        ImageUtil.load(token.icon, itemView.avatar)
     }
 
     private fun showERC721View(token: Token) {
         itemView.erc721Wrapper.visibility = View.VISIBLE
         itemView.erc20Wrapper.visibility = View.GONE
         itemView.erc721Name.text = token.name
-        itemView.value.text = TypeConverter.getHexString(token.value, token.decimals, "0")
+        itemView.value.text = TypeConverter.formatHexString(token.value, token.decimals, "0")
         itemView.value.setTextColor(itemView.getColorById(R.color.textColorSecondary))
-        loadImage(token.icon)
+        ImageUtil.load(token.icon, itemView.avatar)
     }
 
-    private fun loadImage(imageUrl: String) {
-        ImageUtil.load(imageUrl, itemView.avatar)
+    private fun setOnERC20ClickListeners(token: Token, ERC20Listener: ((Token) -> Unit)?) {
+        itemView.setOnClickListener { ERC20Listener?.invoke(token) }
+    }
+
+    private fun setOnERC721ClickListeners(token: Token, ERC721Listener: ((Token) -> Unit)?) {
+        itemView.setOnClickListener { ERC721Listener?.invoke(token) }
     }
 }
 

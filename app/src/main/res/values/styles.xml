@@ -78,7 +78,7 @@
     </style>
 
     <style name="TransparentToolbar.TitleText" parent="Toolbar.TitleText">
-        <item name="android:textColor">@color/textColorSecondary</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
     </style>
 
     <style name="TextStyleMedium">

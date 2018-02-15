@@ -343,4 +343,5 @@
     <string name="empty_state_tokens_message">Share your wallet address to receive money and tokens.</string>
     <string name="share_wallet_address">Share Wallet Address</string>
     <string name="wallet_info">Receive Ethereum and tokens to your personal public address.</string>
+    <string name="receive">Receive</string>
 </resources>
