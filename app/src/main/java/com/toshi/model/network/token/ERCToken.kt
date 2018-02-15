@@ -28,7 +28,6 @@ data class ERCToken(
         val decimals: Int,
         @Json(name = "contract_address")
         val contractAddress: String,
-        val format: String,
         val icon: String
 ) : Token() {
 
@@ -38,7 +37,6 @@ data class ERCToken(
         private const val DECIMALS = "decimals"
         private const val VALUE = "value"
         private const val CONTRACT_ADDRESS = "contract_address"
-        private const val FORMAT = "format"
         private const val ICON = "icon"
 
         fun buildIntent(intent: Intent, ERCToken: ERCToken): Intent {
@@ -48,7 +46,6 @@ data class ERCToken(
                 putExtra(VALUE, ERCToken.value)
                 putExtra(DECIMALS, ERCToken.decimals)
                 putExtra(CONTRACT_ADDRESS, ERCToken.contractAddress)
-                putExtra(FORMAT, ERCToken.format)
                 putExtra(ICON, ERCToken.icon)
                 putExtra(ViewERC20Activity.TOKEN_TYPE, ViewERC20Activity.ERC20_TOKEN)
             }
@@ -62,7 +59,6 @@ data class ERCToken(
                     intent.getStringExtra(VALUE),
                     intent.getIntExtra(DECIMALS, 0),
                     intent.getStringExtra(CONTRACT_ADDRESS),
-                    intent.getStringExtra(FORMAT),
                     intent.getStringExtra(ICON)
             )
         }
