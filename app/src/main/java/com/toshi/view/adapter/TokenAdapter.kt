@@ -21,19 +21,20 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.toshi.R
-import com.toshi.model.network.Token
+import com.toshi.model.network.token.ERCToken
+import com.toshi.model.network.token.Token
 import com.toshi.view.adapter.viewholder.TokenType
 import com.toshi.view.adapter.viewholder.TokensViewHolder
 
 class TokenAdapter(private val tokenType: TokenType) : RecyclerView.Adapter<TokensViewHolder>() {
 
     private val tokens = mutableListOf<Token>()
-    var ERC20Listener: ((Token) -> Unit)? = null
-    var ERC721Listener: ((Token) -> Unit)? = null
+    var tokenListener: ((Token) -> Unit)? = null
+    var ERC721Listener: ((ERCToken) -> Unit)? = null
 
-    fun addTokens(tokens: List<Token>) {
+    fun addTokens(ERCTokens: List<Token>) {
         this.tokens.clear()
-        this.tokens.addAll(tokens)
+        this.tokens.addAll(ERCTokens)
         notifyDataSetChanged()
     }
 
@@ -45,7 +46,7 @@ class TokenAdapter(private val tokenType: TokenType) : RecyclerView.Adapter<Toke
 
     override fun onBindViewHolder(holder: TokensViewHolder?, position: Int) {
         val token = tokens[position]
-        holder?.setToken(token, ERC20Listener, ERC721Listener)
+        holder?.setToken(token, tokenListener, ERC721Listener)
     }
 
     override fun getItemCount() = tokens.size

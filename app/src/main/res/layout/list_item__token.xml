@@ -94,13 +94,30 @@
         android:layout_height="0dp"
         android:layout_weight="1"/>
 
-    <TextView
-        android:id="@+id/value"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="@color/textColorPrimary"
-        tools:text="2.5459504"/>
+        android:gravity="right"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/textColorPrimary"
+            tools:text="2.5459504"/>
+
+        <TextView
+            android:id="@+id/fiatValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@color/textColorSecondary"
+            tools:text="$1024 USD"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
     <android.support.v4.widget.Space
         android:layout_width="@dimen/activity_horizontal_margin"

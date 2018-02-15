@@ -19,9 +19,14 @@ package com.toshi.viewModel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import com.toshi.model.network.Token
+import com.toshi.model.network.Balance
+import com.toshi.model.network.token.ERCToken
+import com.toshi.model.network.token.EtherToken
+import com.toshi.model.network.token.Token
+import com.toshi.util.EthUtil
 import com.toshi.util.LogUtil
 import com.toshi.view.BaseApplication
+import rx.Single
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 
@@ -30,19 +35,43 @@ class TokenViewModel : ViewModel() {
     private val balanceManager by lazy { BaseApplication.get().balanceManager }
     private val subscriptions by lazy { CompositeSubscription() }
 
-    val erc20Tokens by lazy { MutableLiveData<List<Token>>() }
-    val erc721Tokens by lazy { MutableLiveData<List<Token>>() }
+    val tokens by lazy { MutableLiveData<List<Token>>() }
+    val erc721Tokens by lazy { MutableLiveData<List<ERCToken>>() }
 
     fun fetchERC20Tokens() {
-        val sub = balanceManager
-                .getERC20Tokens()
+        val sub = Single.zip(
+                        balanceManager.getERC20Tokens(),
+                        createEtherToken(),
+                        { tokens, etherToken -> Pair(tokens.tokens, etherToken) }
+                )
+                .map { addEtherTokenToTokenList(it.first, it.second) }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        { erc20Tokens.value = it.tokens },
+                        { tokens.value = it },
                         { LogUtil.e(javaClass, "Error $it") }
                 )
 
         subscriptions.add(sub)
+    }
+
+    private fun addEtherTokenToTokenList(tokens: List<ERCToken>, etherToken: EtherToken): List<Token> {
+        val tokenList = mutableListOf<Token>()
+        tokenList.add(etherToken)
+        tokenList.addAll(tokens)
+        return tokenList
+    }
+
+    private fun createEtherToken(): Single<EtherToken> {
+        return balanceManager.balanceObservable
+                .first()
+                .toSingle()
+                .flatMap { it.getBalanceWithLocalBalance() }
+                .map { mapBalance(it) }
+    }
+
+    private fun mapBalance(balance: Balance): EtherToken {
+        val ethAmount = EthUtil.weiAmountToUserVisibleString(balance.unconfirmedBalance)
+        return EtherToken.create(etherValue = ethAmount, fiatValue = balance.localBalance ?: "0.0")
     }
 
     fun fetchERC721Tokens() {

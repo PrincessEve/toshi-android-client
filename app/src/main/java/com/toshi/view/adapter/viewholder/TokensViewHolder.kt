@@ -22,51 +22,70 @@ import android.view.View
 import com.toshi.R
 import com.toshi.crypto.util.TypeConverter
 import com.toshi.extensions.getColorById
-import com.toshi.model.network.Token
+import com.toshi.extensions.isVisible
+import com.toshi.model.network.token.ERCToken
+import com.toshi.model.network.token.EtherToken
+import com.toshi.model.network.token.Token
 import com.toshi.util.ImageUtil
 import kotlinx.android.synthetic.main.list_item__token.view.*
 
 class TokensViewHolder(private val tokenType: TokenType, itemView: View?) : RecyclerView.ViewHolder(itemView) {
 
-    fun setToken(token: Token, ERC20Listener: ((Token) -> Unit)?, ERC721Listener: ((Token) -> Unit)?) {
+    fun setToken(token: Token, ERC20Listener: ((Token) -> Unit)?, ERC721Listener: ((ERCToken) -> Unit)?) {
         when (tokenType) {
-            is TokenType.ERC20Token -> {
-                showERC20View(token)
-                setOnERC20ClickListeners(token, ERC20Listener)
-            }
-            is TokenType.ERC721Token -> {
-                showERC721View(token)
-                ERC721Listener?.invoke(token)
-                setOnERC721ClickListeners(token, ERC721Listener)
-            }
+            is TokenType.ERC20Token -> showToken(token, ERC20Listener)
+            is TokenType.ERC721Token -> showERC721View(token, ERC721Listener)
         }
     }
 
-    private fun showERC20View(token: Token) {
+    private fun showToken(token: Token, tokenListener: ((Token) -> Unit)?) {
+        when (token) {
+            is EtherToken -> showEtherToken(token, tokenListener)
+            is ERCToken -> showERC20View(token, tokenListener)
+            else -> throw IllegalStateException(Throwable("Invalid token type in this context"))
+        }
+    }
+
+    private fun showERC721View(token: Token, tokenListener: ((ERCToken) -> Unit)?) {
+        when (token) {
+            is ERCToken -> showERC721View(token, tokenListener)
+            else -> throw IllegalStateException(Throwable("Invalid token type in this context"))
+        }
+    }
+
+    private fun showEtherToken(etherToken: EtherToken, tokenListener: ((Token) -> Unit)?) {
         itemView.erc20Wrapper.visibility = View.VISIBLE
         itemView.erc721Wrapper.visibility = View.GONE
-        itemView.erc20Name.text = token.name
-        itemView.erc20Abbreviation.text = token.symbol
-        itemView.value.text = TypeConverter.formatHexString(token.value, token.decimals, "0.000000")
+        itemView.erc20Name.text = etherToken.name
+        itemView.erc20Abbreviation.text = etherToken.symbol
+        itemView.value.text = etherToken.etherValue
+        itemView.fiatValue.text = etherToken.fiatValue
+        itemView.fiatValue.isVisible(true)
         itemView.value.setTextColor(itemView.getColorById(R.color.textColorPrimary))
-        ImageUtil.load(token.icon, itemView.avatar)
+        itemView.setOnClickListener { tokenListener?.invoke(etherToken) }
+        //ImageUtil.load(ERCToken.icon, itemView.avatar)
     }
 
-    private fun showERC721View(token: Token) {
+    private fun showERC20View(ERCToken: ERCToken, tokenListener: ((ERCToken) -> Unit)?) {
+        itemView.erc20Wrapper.visibility = View.VISIBLE
+        itemView.erc721Wrapper.visibility = View.GONE
+        itemView.erc20Name.text = ERCToken.name
+        itemView.erc20Abbreviation.text = ERCToken.symbol
+        itemView.value.text = TypeConverter.formatHexString(ERCToken.value, ERCToken.decimals, "0.000000")
+        itemView.fiatValue.isVisible(false)
+        itemView.value.setTextColor(itemView.getColorById(R.color.textColorPrimary))
+        ImageUtil.load(ERCToken.icon, itemView.avatar)
+        itemView.setOnClickListener { tokenListener?.invoke(ERCToken) }
+    }
+
+    private fun showERC721View(ERCToken: ERCToken, tokenListener: ((ERCToken) -> Unit)?) {
         itemView.erc721Wrapper.visibility = View.VISIBLE
         itemView.erc20Wrapper.visibility = View.GONE
-        itemView.erc721Name.text = token.name
-        itemView.value.text = TypeConverter.formatHexString(token.value, token.decimals, "0")
+        itemView.erc721Name.text = ERCToken.name
+        itemView.value.text = TypeConverter.formatHexString(ERCToken.value, ERCToken.decimals, "0")
         itemView.value.setTextColor(itemView.getColorById(R.color.textColorSecondary))
-        ImageUtil.load(token.icon, itemView.avatar)
-    }
-
-    private fun setOnERC20ClickListeners(token: Token, ERC20Listener: ((Token) -> Unit)?) {
-        itemView.setOnClickListener { ERC20Listener?.invoke(token) }
-    }
-
-    private fun setOnERC721ClickListeners(token: Token, ERC721Listener: ((Token) -> Unit)?) {
-        itemView.setOnClickListener { ERC721Listener?.invoke(token) }
+        ImageUtil.load(ERCToken.icon, itemView.avatar)
+        itemView.setOnClickListener { tokenListener?.invoke(ERCToken) }
     }
 }
 
