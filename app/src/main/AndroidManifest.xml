@@ -119,6 +119,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize"/>
         <activity android:name=".view.activity.ViewERC20Activity" />
         <activity android:name=".view.activity.SendERC20TokenActivity" />
+        <activity android:name=".view.activity.SendETHActivity" />
 
         <meta-data
             android:name="io.fabric.ApiKey"
