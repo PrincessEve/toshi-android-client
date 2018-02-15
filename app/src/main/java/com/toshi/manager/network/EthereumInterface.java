@@ -18,13 +18,13 @@
 package com.toshi.manager.network;
 
 import com.toshi.model.network.Balance;
-import com.toshi.model.network.ERC721Tokens;
+import com.toshi.model.network.token.ERC721Tokens;
 import com.toshi.model.network.GcmDeregistration;
 import com.toshi.model.network.GcmRegistration;
 import com.toshi.model.network.SentTransaction;
 import com.toshi.model.network.ServerTime;
 import com.toshi.model.network.SignedTransaction;
-import com.toshi.model.network.ERC20Tokens;
+import com.toshi.model.network.token.ERC20Tokens;
 import com.toshi.model.network.TransactionRequest;
 import com.toshi.model.network.UnsignedTransaction;
 

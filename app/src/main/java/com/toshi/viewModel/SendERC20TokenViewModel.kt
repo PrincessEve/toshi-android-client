@@ -25,14 +25,14 @@ import com.toshi.extensions.isValidDecimal
 import com.toshi.manager.model.ERC20TokenPaymentTask
 import com.toshi.manager.model.PaymentTask
 import com.toshi.model.network.Balance
-import com.toshi.model.network.Token
+import com.toshi.model.network.token.ERCToken
 import com.toshi.util.LogUtil
 import com.toshi.view.BaseApplication
 import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import java.math.BigDecimal
 
-class SendERC20TokenViewModel(val token: Token, fetchEthBalance: Boolean) : ViewModel() {
+class SendERC20TokenViewModel(val token: ERCToken, fetchEthBalance: Boolean) : ViewModel() {
 
     private val subscriptions by lazy { CompositeSubscription() }
     private val balanceManager by lazy { BaseApplication.get().balanceManager }
@@ -70,5 +70,4 @@ class SendERC20TokenViewModel(val token: Token, fetchEthBalance: Boolean) : View
         val inputAmount = createSafeBigDecimal(amount)
         val balanceAmount = BigDecimal(TypeConverter.formatHexString(token.value, token.decimals, null))
         return inputAmount.compareTo(balanceAmount) == 0 || inputAmount.compareTo(balanceAmount) == -1
-    }
 }

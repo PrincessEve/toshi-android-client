@@ -15,8 +15,8 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.toshi.model.network
+package com.toshi.model.network.token
 
 data class ERC20Tokens(
-        val tokens: List<Token>
+        val tokens: List<ERCToken>
 )

@@ -20,22 +20,22 @@ package com.toshi.viewModel.ViewModelFactory;
 import android.arch.lifecycle.ViewModelProvider;
 import android.support.annotation.NonNull;
 
-import com.toshi.model.network.Token;
+import com.toshi.model.network.token.ERCToken;
 import com.toshi.viewModel.SendERC20TokenViewModel;
 
 public class SendERC20TokenViewModelFactory implements ViewModelProvider.Factory {
 
     private boolean fetchEthBalance;
-    private Token token;
+    private ERCToken ERCToken;
 
-    public SendERC20TokenViewModelFactory(final Token token, final boolean fetchEthBalance) {
-        this.token = token;
+    public SendERC20TokenViewModelFactory(final ERCToken ERCToken, final boolean fetchEthBalance) {
+        this.ERCToken = ERCToken;
         this.fetchEthBalance = fetchEthBalance;
     }
 
     @NonNull
     @Override
     public SendERC20TokenViewModel create(@NonNull Class modelClass) {
-        return new SendERC20TokenViewModel(this.token, this.fetchEthBalance);
+        return new SendERC20TokenViewModel(this.ERCToken, this.fetchEthBalance);
     }
 }

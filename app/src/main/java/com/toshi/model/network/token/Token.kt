@@ -15,8 +15,6 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.toshi.model.network
+package com.toshi.model.network.token
 
-data class ERC721Tokens(
-        val collectibles: List<Token>
-)
+abstract class Token

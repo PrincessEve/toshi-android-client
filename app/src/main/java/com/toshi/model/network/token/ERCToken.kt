@@ -15,21 +15,22 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.toshi.model.network
+package com.toshi.model.network.token
 
 import android.content.Intent
 import com.squareup.moshi.Json
+import com.toshi.view.activity.ViewERC20Activity
 
-data class Token(
+data class ERCToken(
         val symbol: String,
         val name: String,
-        val decimals: Int,
         val value: String,
+        val decimals: Int,
         @Json(name = "contract_address")
         val contractAddress: String,
         val format: String,
         val icon: String
-) {
+) : Token() {
 
     companion object {
         private const val SYMBOL = "symbol"
@@ -38,27 +39,28 @@ data class Token(
         private const val VALUE = "value"
         private const val CONTRACT_ADDRESS = "contract_address"
         private const val FORMAT = "format"
-        private const val ICON = "format"
+        private const val ICON = "icon"
 
-        fun buildIntent(intent: Intent, token: Token): Intent {
+        fun buildIntent(intent: Intent, ERCToken: ERCToken): Intent {
             return intent.apply {
-                putExtra(SYMBOL, token.symbol)
-                putExtra(NAME, token.name)
-                putExtra(DECIMALS, token.decimals)
-                putExtra(VALUE, token.value)
-                putExtra(CONTRACT_ADDRESS, token.contractAddress)
-                putExtra(FORMAT, token.format)
-                putExtra(ICON, token.icon)
+                putExtra(SYMBOL, ERCToken.symbol)
+                putExtra(NAME, ERCToken.name)
+                putExtra(VALUE, ERCToken.value)
+                putExtra(DECIMALS, ERCToken.decimals)
+                putExtra(CONTRACT_ADDRESS, ERCToken.contractAddress)
+                putExtra(FORMAT, ERCToken.format)
+                putExtra(ICON, ERCToken.icon)
+                putExtra(ViewERC20Activity.TOKEN_TYPE, ViewERC20Activity.ERC20_TOKEN)
             }
         }
 
-        fun getTokenFromIntent(intent: Intent): Token? {
+        fun getTokenFromIntent(intent: Intent): ERCToken? {
             if (!hasAllExtras(intent)) return null
-            return Token(
+            return ERCToken(
                     intent.getStringExtra(SYMBOL),
                     intent.getStringExtra(NAME),
-                    intent.getIntExtra(DECIMALS, 0),
                     intent.getStringExtra(VALUE),
+                    intent.getIntExtra(DECIMALS, 0),
                     intent.getStringExtra(CONTRACT_ADDRESS),
                     intent.getStringExtra(FORMAT),
                     intent.getStringExtra(ICON)
