@@ -101,6 +101,7 @@ public class CurrencyPresenter implements Presenter<CurrencyActivity> {
 
     private void handleCurrencyClicked(final Currency currency) {
         SharedPrefsUtil.saveCurrency(currency.getCode());
+        BaseApplication.get().getBalanceManager().refreshBalance();
         this.activity.finish();
     }
 
