@@ -28,6 +28,7 @@ import com.toshi.model.network.token.ERCToken
 import com.toshi.model.network.token.EtherToken
 import com.toshi.model.network.token.Token
 import com.toshi.util.ImageUtil
+import com.toshi.view.fragment.DialogFragment.ShareWalletAddressDialog
 import kotlinx.android.synthetic.main.activity_view_erc20.*
 
 class ViewERC20Activity : AppCompatActivity() {
@@ -93,6 +94,7 @@ class ViewERC20Activity : AppCompatActivity() {
         closeButton.setOnClickListener { finish() }
         receive.setOnClickListener {}
         send.setOnClickListener { startSendActivity(token) }
+        receive.setOnClickListener { showShareWalletDialog() }
     }
 
     private fun startSendActivity(token: Token) {
@@ -100,6 +102,12 @@ class ViewERC20Activity : AppCompatActivity() {
             is EtherToken -> startActivity<SendETHActivity> { EtherToken.buildIntent(this, token) }
             is ERCToken -> startActivity<SendERC20TokenActivity> { ERCToken.buildIntent(this, token) }
             else -> throw IllegalStateException(Throwable("Invalid token in this context"))
+        }
+    }
+
+    private fun showShareWalletDialog() {
+        ShareWalletAddressDialog.newInstance().apply {
+            show(supportFragmentManager, ShareWalletAddressDialog.TAG)
         }
     }
 }
