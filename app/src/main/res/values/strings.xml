@@ -353,4 +353,5 @@
     <string name="max">Max</string>
     <string name="_0_0">0.0</string>
     <string name="invalid_token">Invalid token</string>
+    <string name="invalid_format">Invalid format</string>
 </resources>

@@ -24,6 +24,7 @@ import com.toshi.model.network.ExchangeRate;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
+import java.text.DecimalFormat;
 
 public class EthUtil {
 
@@ -85,12 +86,16 @@ public class EthUtil {
     public static String ethToFiat(final ExchangeRate exchangeRate, final BigDecimal ethAmount) {
         final BigDecimal marketRate = exchangeRate.getRate();
         final BigDecimal fiatAmount = marketRate.multiply(ethAmount, MathContext.DECIMAL64);
-        return fiatAmount.toString();
+        final DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(BIG_DECIMAL_SCALE);
+        return df.format(fiatAmount);
     }
 
     public static String fiatToEth(final ExchangeRate exchangeRate, final BigDecimal fiatAmount) {
         final BigDecimal marketRate = exchangeRate.getRate();
         final BigDecimal ethAmount = fiatAmount.divide(marketRate, BIG_DECIMAL_SCALE, BigDecimal.ROUND_HALF_EVEN);
-        return ethAmount.toString();
+        final DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(BIG_DECIMAL_SCALE);
+        return df.format(ethAmount);
     }
 }
