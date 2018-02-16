@@ -354,4 +354,6 @@
     <string name="_0_0">0.0</string>
     <string name="invalid_token">Invalid token</string>
     <string name="invalid_format">Invalid format</string>
+    <string name="send_max_amount_title">The amount is not final</string>
+    <string name="send_max_amount_message">Final transaction amount and network fees will be shown on the next screen</string>
 </resources>

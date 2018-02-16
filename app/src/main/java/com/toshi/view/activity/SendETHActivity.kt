@@ -32,6 +32,7 @@ import com.toshi.extensions.toast
 import com.toshi.manager.model.PaymentTask
 import com.toshi.model.network.Balance
 import com.toshi.model.network.token.EtherToken
+import com.toshi.util.DialogUtil
 import com.toshi.util.EthUtil
 import com.toshi.util.PaymentType
 import com.toshi.util.QrCodeHandler
@@ -67,11 +68,30 @@ class SendETHActivity : AppCompatActivity() {
     }
 
     private fun initClickListeners() {
+        max.setOnClickListener { setMaxAmount() }
         currencySwitcher.setOnClickListener { viewModel.switchCurrencyMode({ switchFromFiatToEthValue() }, { switchFromEthToFiatValue() }) }
         closeButton.setOnClickListener { finish() }
         qrCodeBtn.setOnClickListener { startScanQrActivity() }
         paste.setOnClickListener { pasteToAddress() }
         continueBtn.setOnClickListener { validateAddressAndShowPaymentConfirmation() }
+    }
+
+    private fun setMaxAmount() {
+        val maxAmount = viewModel.getMaxAmount()
+        toAmount.setText(maxAmount)
+        showMaxAmountPaymentConfirmation()
+    }
+
+    private fun showMaxAmountPaymentConfirmation() {
+        DialogUtil.getBaseDialog(
+                this,
+                R.string.send_max_amount_title,
+                R.string.send_max_amount_message,
+                R.string.ok,
+                R.string.cancel,
+                { _, _ -> viewModel.sendMaxAmount = true },
+                { _, _ -> viewModel.sendMaxAmount = false }
+        ).show()
     }
 
     private fun switchFromFiatToEthValue() {
@@ -113,10 +133,10 @@ class SendETHActivity : AppCompatActivity() {
 
     private fun showPaymentConfirmation(value: String, toAddress: String) {
         val dialog = PaymentConfirmationFragment.newInstanceExternalPayment(
-                toAddress,
-                value,
-                null,
-                PaymentType.TYPE_SEND
+                paymentAddress = toAddress,
+                value = value,
+                paymentType = PaymentType.TYPE_SEND,
+                sendMaxAmount = viewModel.sendMaxAmount
         )
         dialog.setOnPaymentConfirmationApprovedListener { onPaymentApproved(it) }
         dialog.show(supportFragmentManager, PaymentConfirmationFragment.TAG)
@@ -168,6 +188,7 @@ class SendETHActivity : AppCompatActivity() {
                 updateConvertedAmount(s.toString())
                 validateAmount(s.toString())
                 enableOrDisableContinueButton()
+                disableSendMaxAmount()
             }
         })
         toAddress.addTextChangedListener(object : TextChangedListener() {
@@ -176,6 +197,10 @@ class SendETHActivity : AppCompatActivity() {
                 enableOrDisableContinueButton()
             }
         })
+    }
+
+    private fun disableSendMaxAmount() {
+        viewModel.sendMaxAmount = false
     }
 
     private fun updateConvertedAmount(amountInput: String) {

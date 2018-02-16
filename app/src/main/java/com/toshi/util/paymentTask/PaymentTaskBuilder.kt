@@ -44,13 +44,14 @@ class PaymentTaskBuilder {
 
     fun buildPaymentTask(fromPaymentAddress: String,
                          toPaymentAddress: String,
-                         ethAmount: String): Single<PaymentTask> {
+                         ethAmount: String,
+                         sendMaxAmount: Boolean): Single<PaymentTask> {
         val payment = Payment()
                 .setValue(ethAmount)
                 .setFromAddress(fromPaymentAddress)
                 .setToAddress(toPaymentAddress)
 
-        return createUnsignedTransaction(payment)
+        return createUnsignedTransaction(payment, sendMaxAmount)
                 .flatMap { getPaymentInfoAndUser(it, toPaymentAddress) }
                 .map { buildPaymentTask(it.first, it.second, payment) }
     }
@@ -75,8 +76,9 @@ class PaymentTaskBuilder {
                 .map { buildPaymentTask(it, erc20TokenPayment, tokenSymbol, decimalEncodedValue) }
     }
 
-    private fun createUnsignedTransaction(payment: Payment): Single<UnsignedTransaction> {
-        val transactionRequest = transactionBuilder.generateTransactionRequest(payment)
+    private fun createUnsignedTransaction(payment: Payment, sendMaxAmount: Boolean): Single<UnsignedTransaction> {
+        val transactionRequest = if (sendMaxAmount) transactionBuilder.generateMaxAmountTransactionRequest(payment)
+        else transactionBuilder.generateTransactionRequest(payment)
         return EthereumService
                 .getApi()
                 .createTransaction(transactionRequest)

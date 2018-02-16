@@ -282,6 +282,7 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
         const val TOKEN_ADDRESS = "token_address"
         const val TOKEN_SYMBOL = "token_symbol"
         const val TOKEN_DECIMALS = "token_decimals"
+        const val SEND_MAX_AMOUNT = "send_max_amount"
 
         fun newInstanceToshiPayment(toshiId: String,
                                     value: String,
@@ -296,11 +297,13 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
 
         fun newInstanceExternalPayment(paymentAddress: String,
                                        value: String,
-                                       memo: String?,
-                                       @PaymentType.Type paymentType: Int): PaymentConfirmationFragment {
+                                       memo: String? = null,
+                                       @PaymentType.Type paymentType: Int,
+                                       sendMaxAmount: Boolean = false): PaymentConfirmationFragment {
             val bundle = Bundle().apply {
                 putInt(CONFIRMATION_TYPE, PaymentConfirmationType.EXTERNAL)
                 putString(PAYMENT_ADDRESS, paymentAddress)
+                putBoolean(SEND_MAX_AMOUNT, sendMaxAmount)
             }
             return newInstance(bundle, value, memo, paymentType)
         }

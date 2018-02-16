@@ -170,9 +170,10 @@ public class TransactionManager {
 
     public Single<PaymentTask> buildPaymentTask(final String fromPaymentAddress,
                                                 final String toPaymentAddress,
-                                                final String ethAmount) {
+                                                final String ethAmount,
+                                                final boolean sendMaxAmount) {
         return this.paymentTaskBuilder
-                .buildPaymentTask(fromPaymentAddress, toPaymentAddress, ethAmount);
+                .buildPaymentTask(fromPaymentAddress, toPaymentAddress, ethAmount, sendMaxAmount);
     }
 
     public Single<ERC20TokenPaymentTask> buildPaymentTask(final String fromPaymentAddress,

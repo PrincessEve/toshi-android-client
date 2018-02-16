@@ -146,7 +146,8 @@ public class QrCodeHandler {
                                     payment.getAddress(),
                                     payment.getValue(),
                                     payment.getMemo(),
-                                    PaymentType.TYPE_REQUEST
+                                    PaymentType.TYPE_REQUEST,
+                                    false
                             );
             dialog.show(this.activity.getSupportFragmentManager(), PaymentConfirmationFragment.TAG);
             dialog.setOnPaymentConfirmationApprovedListener(this::onPaymentApproved)

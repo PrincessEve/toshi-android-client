@@ -63,6 +63,27 @@ public class DialogUtil {
     }
 
     public static AlertDialog.Builder getBaseDialog(final Context context,
+                                                    final @StringRes int title,
+                                                    final @StringRes int message,
+                                                    final @StringRes int positiveButtonText,
+                                                    final @StringRes int negativeButtonText,
+                                                    final DialogInterface.OnClickListener positiveListener,
+                                                    final DialogInterface.OnClickListener negativeListener) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogCustom);
+        return builder
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(positiveButtonText, (dialog, which) -> {
+                    positiveListener.onClick(dialog, which);
+                    dialog.dismiss();
+                })
+                .setNegativeButton(negativeButtonText, (dialog, which) -> {
+                    negativeListener.onClick(dialog, which);
+                    dialog.dismiss();
+                });
+    }
+
+    public static AlertDialog.Builder getBaseDialog(final Context context,
                                                     final String title,
                                                     final String message,
                                                     final @StringRes int positiveButtonText,

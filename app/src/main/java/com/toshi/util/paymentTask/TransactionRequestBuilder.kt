@@ -24,9 +24,21 @@ import com.toshi.model.sofa.payment.Payment
 
 class TransactionRequestBuilder {
 
+    companion object {
+        private const val MAX = "max"
+    }
+
     fun generateTransactionRequest(payment: Payment): TransactionRequest {
         return TransactionRequest(
                 value = payment.value,
+                from = payment.fromAddress,
+                to = payment.toAddress
+        )
+    }
+
+    fun generateMaxAmountTransactionRequest(payment: Payment): TransactionRequest {
+        return TransactionRequest(
+                value = MAX,
                 from = payment.fromAddress,
                 to = payment.toAddress
         )

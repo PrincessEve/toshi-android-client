@@ -37,6 +37,7 @@ import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.DAPP_URL
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.ETH_AMOUNT
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.PAYMENT_ADDRESS
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.PAYMENT_TYPE
+import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.SEND_MAX_AMOUNT
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.TOKEN_ADDRESS
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.TOKEN_DECIMALS
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.TOKEN_SYMBOL
@@ -105,6 +106,7 @@ class PaymentConfirmationViewModel : ViewModel() {
     fun getDappUrl() = bundle.getString(DAPP_URL)
     fun getDappTitle() = bundle.getString(DAPP_TITLE)
     fun getDappFavicon() = bundle.getParcelable<Bitmap>(DAPP_FAVICON)
+    fun isSendingMaxAmount() = bundle.getBoolean(SEND_MAX_AMOUNT, false)
 
     private fun getPaymentTaskWithToshiId(toshiId: String, ethAmount: String) {
         val sub = Single.zip(
@@ -112,7 +114,7 @@ class PaymentConfirmationViewModel : ViewModel() {
                 recipientManager.getUserFromToshiId(toshiId),
                 { wallet, recipient -> Pair(wallet, recipient) }
         )
-        .flatMap { getPaymentTask(it.first.paymentAddress, it.second.paymentAddress, ethAmount) }
+        .flatMap { getPaymentTask(it.first.paymentAddress, it.second.paymentAddress, ethAmount, isSendingMaxAmount()) }
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe { isGasPriceLoading.value = true }
@@ -145,7 +147,7 @@ class PaymentConfirmationViewModel : ViewModel() {
 
     private fun getPaymentTaskWithPaymentAddress(toPaymentAddress: String, ethAmount: String) {
         val sub = toshiManager.wallet
-                .flatMap { getPaymentTask(it.paymentAddress, toPaymentAddress, ethAmount) }
+                .flatMap { getPaymentTask(it.paymentAddress, toPaymentAddress, ethAmount, isSendingMaxAmount()) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { isGasPriceLoading.value = true }
@@ -173,8 +175,16 @@ class PaymentConfirmationViewModel : ViewModel() {
         this.subscriptions.add(sub)
     }
 
-    private fun getPaymentTask(fromPaymentAddress: String, toPaymentAddress: String, ethAmount: String): Single<PaymentTask> {
-        return transactionManager.buildPaymentTask(fromPaymentAddress, toPaymentAddress, ethAmount)
+    private fun getPaymentTask(fromPaymentAddress: String,
+                               toPaymentAddress: String,
+                               ethAmount: String,
+                               sendMaxAmount: Boolean): Single<PaymentTask> {
+        return transactionManager.buildPaymentTask(
+                fromPaymentAddress,
+                toPaymentAddress,
+                ethAmount,
+                sendMaxAmount
+        )
     }
 
     private fun getPaymentTask(fromPaymentAddress: String,

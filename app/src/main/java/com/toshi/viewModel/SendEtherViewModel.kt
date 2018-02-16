@@ -37,6 +37,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.subscriptions.CompositeSubscription
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.text.DecimalFormat
 
 class SendEtherViewModel : ViewModel() {
 
@@ -46,6 +47,7 @@ class SendEtherViewModel : ViewModel() {
     private var exchangeRate: ExchangeRate? = null
     private var currencyMode = CurrencyMode.ETH
     val ethBalance by lazy { MutableLiveData<Balance>() }
+    var sendMaxAmount = false
 
     init {
         getBalance()
@@ -145,6 +147,11 @@ class SendEtherViewModel : ViewModel() {
         }
     }
 
+    fun getFiatCurrencySymbol(): String {
+        val currency = SharedPrefsUtil.getCurrency()
+        return CurrencyUtil.getSymbol(currency)
+    }
+
     fun getFiatCurrencyCode(): String = SharedPrefsUtil.getCurrency()
 
     fun switchCurrencyMode(updateEthValue: () -> Unit, updateFiatValue: () -> Unit) {
@@ -166,8 +173,8 @@ class SendEtherViewModel : ViewModel() {
         return when (currencyMode) {
             CurrencyMode.ETH -> {
                 val fiatAmount = ethToFiat(inputValue)
-                val currencyCode = exchangeRate?.let { CurrencyUtil.getCode(it.to) } ?: ""
-                val currencySymbol = exchangeRate?.let { CurrencyUtil.getSymbol(it.to) } ?: ""
+                val currencyCode = getFiatCurrencyCode()
+                val currencySymbol = getFiatCurrencySymbol()
                 "$currencySymbol$fiatAmount $currencyCode"
             }
             CurrencyMode.FIAT -> {
@@ -182,6 +189,32 @@ class SendEtherViewModel : ViewModel() {
         val etherBalance = if (ethBalance != null) ethBalance.getUnconfirmedBalance() else BigInteger("0")
         val decimalEtherBalance = EthUtil.weiAmountToUserVisibleString(etherBalance)
         return decimalEtherBalance.toString()
+    }
+
+    fun getMaxAmount(): String {
+        return when (currencyMode) {
+            CurrencyMode.ETH -> getMaxEthAmount()
+            CurrencyMode.FIAT -> getMaxFiatAmount()
+        }
+    }
+
+    private fun getMaxEthAmount(): String {
+        val balance = ethBalance.value ?: return "0"
+        val ethAmount = EthUtil.weiToEth(balance.getUnconfirmedBalance())
+        val df = DecimalFormat()
+        df.maximumFractionDigits = EthUtil.BIG_DECIMAL_SCALE
+        return df.format(ethAmount)
+    }
+
+    private fun getMaxFiatAmount(): String {
+        val balance = ethBalance.value ?: return "0"
+        return exchangeRate?.let {
+            val ethAmount = EthUtil.weiToEth(balance.getUnconfirmedBalance())
+            val localAmount = it.rate.multiply(ethAmount)
+            val df = DecimalFormat()
+            df.maximumFractionDigits = EthUtil.BIG_DECIMAL_SCALE
+            return df.format(localAmount)
+        } ?: "0"
     }
 
     override fun onCleared() {
