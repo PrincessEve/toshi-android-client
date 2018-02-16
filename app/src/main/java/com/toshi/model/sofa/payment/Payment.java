@@ -44,6 +44,7 @@ public class Payment {
     /* package */ String fromAddress;
     /* package */ String txHash;
     /* package */ String status;
+    /* package */ String contractAddress; //Only used when receiving payments
 
     @IntDef({
             NOT_RELEVANT,
@@ -109,6 +110,9 @@ public class Payment {
         return this;
     }
 
+    public String getContractAddress() {
+        return contractAddress;
+    }
 
     public Payment setLocalPrice(final String localPrice) {
         if (this.androidClientSideCustomData == null) {

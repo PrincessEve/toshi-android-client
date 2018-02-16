@@ -93,13 +93,15 @@ public class GcmMessageReceiver extends FirebaseMessagingService {
 
             if (sofaMessage.getType() == SofaType.PAYMENT) {
                 final Payment payment = SofaAdapters.get().paymentFrom(sofaMessage.getPayload());
+                final boolean isTokenPayment = payment.getContractAddress() != null;
+                if (isTokenPayment) return; //Ignore incoming token payments
                 checkIfUserIsBlocked(payment);
             } else {
                 tryShowIncomingMessage();
             }
 
         } catch (final Exception ex) {
-            LogUtil.exception(getClass(), ex);
+            LogUtil.exception(getClass(), "Error while parsing incoming message: " + ex);
         }
     }
 
