@@ -147,12 +147,12 @@ class SendEtherViewModel : ViewModel() {
         }
     }
 
+    fun getFiatCurrencyCode(): String = SharedPrefsUtil.getCurrency()
+
     fun getFiatCurrencySymbol(): String {
         val currency = SharedPrefsUtil.getCurrency()
         return CurrencyUtil.getSymbol(currency)
     }
-
-    fun getFiatCurrencyCode(): String = SharedPrefsUtil.getCurrency()
 
     fun switchCurrencyMode(updateEthValue: () -> Unit, updateFiatValue: () -> Unit) {
         currencyMode = when (currencyMode) {

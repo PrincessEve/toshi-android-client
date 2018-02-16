@@ -99,14 +99,15 @@ class SendETHActivity : AppCompatActivity() {
         val ethAmount = viewModel.fiatToEth(inputValue)
         toAmount.setText(ethAmount)
         toAmount.setSuffix(getString(R.string.eth_currency_code))
+        toAmount.setPrefix("")
     }
 
     private fun switchFromEthToFiatValue() {
         val inputValue = toAmount.text.toString()
         val ethAmount = viewModel.ethToFiat(inputValue)
         toAmount.setText(ethAmount)
-        val currencyCode = viewModel.getFiatCurrencyCode()
-        toAmount.setSuffix(currencyCode)
+        toAmount.setSuffix(viewModel.getFiatCurrencyCode())
+        toAmount.setPrefix(viewModel.getFiatCurrencySymbol())
     }
 
     private fun startScanQrActivity() = startActivityForResult<ScannerActivity>(PAYMENT_SCAN_REQUEST_CODE) {
