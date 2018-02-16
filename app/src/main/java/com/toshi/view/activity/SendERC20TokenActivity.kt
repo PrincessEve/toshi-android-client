@@ -18,7 +18,6 @@
 package com.toshi.view.activity
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.ClipboardManager
 import android.content.Context
@@ -32,9 +31,7 @@ import com.toshi.extensions.isVisible
 import com.toshi.extensions.startActivityForResult
 import com.toshi.extensions.toast
 import com.toshi.manager.model.PaymentTask
-import com.toshi.model.network.Balance
-import com.toshi.model.network.Token
-import com.toshi.util.EthUtil
+import com.toshi.model.network.token.ERCToken
 import com.toshi.util.PaymentType
 import com.toshi.util.QrCodeHandler
 import com.toshi.util.ScannerResultType
@@ -62,12 +59,11 @@ class SendERC20TokenActivity : AppCompatActivity() {
         initViewModel()
         initClickListeners()
         updateUi()
-        initObservers()
         initTextListeners()
     }
 
     private fun initViewModel() {
-        val token = Token.getTokenFromIntent(intent)
+        val token = ERCToken.getTokenFromIntent(intent)
         if (token == null) {
             toast(R.string.invalid_token)
             finish()
@@ -75,7 +71,7 @@ class SendERC20TokenActivity : AppCompatActivity() {
         }
         viewModel = ViewModelProviders.of(
                 this,
-                SendERC20TokenViewModelFactory(token, false)
+                SendERC20TokenViewModelFactory(token)
         ).get(SendERC20TokenViewModel::class.java)
     }
 
@@ -102,8 +98,7 @@ class SendERC20TokenActivity : AppCompatActivity() {
     }
 
     private fun setMaxAmount() {
-        val token = viewModel.token
-        val tokenValue = TypeConverter.formatHexString(token.value, token.decimals, null)
+        val tokenValue = viewModel.getMaxAmount()
         toAmount.setText(tokenValue)
     }
 
@@ -115,13 +110,13 @@ class SendERC20TokenActivity : AppCompatActivity() {
         showPaymentConfirmation(token, transferValue, address)
     }
 
-    private fun showPaymentConfirmation(token: Token, value: String, toAddress: String) {
+    private fun showPaymentConfirmation(ERCToken: ERCToken, value: String, toAddress: String) {
         val dialog = PaymentConfirmationFragment.newInstanceERC20TokenPayment(
                 toAddress,
                 value,
-                token.contractAddress,
-                token.symbol,
-                token.decimals,
+                ERCToken.contractAddress,
+                ERCToken.symbol,
+                ERCToken.decimals,
                 null,
                 PaymentType.TYPE_SEND
         )
@@ -138,28 +133,15 @@ class SendERC20TokenActivity : AppCompatActivity() {
         setAmountSuffix(token)
     }
 
-    private fun setAmountSuffix(token: Token) = toAmount.setSuffix(token.symbol)
+    private fun setAmountSuffix(token: ERCToken) = toAmount.setSuffix(token.symbol)
 
-    private fun renderToolbar(token: Token) {
-        toolbarTitle.text = getString(R.string.send_token, token.symbol)
+    private fun renderToolbar(ERCToken: ERCToken) {
+        toolbarTitle.text = getString(R.string.send_token, ERCToken.symbol)
     }
 
-    private fun renderERC20TokenBalance(token: Token) {
-        val tokenValue = TypeConverter.formatHexString(token.value, token.decimals, "0.000000")
-        balance.text = getString(R.string.erc20_balance, token.symbol, tokenValue, token.symbol)
-    }
-
-    private fun initObservers() {
-        viewModel.ethBalance.observe(this, Observer {
-            if (it != null) renderEthBalance(it)
-        })
-    }
-
-    private fun renderEthBalance(currentBalance: Balance) {
-        val totalEthAmount = EthUtil.weiAmountToUserVisibleString(currentBalance.unconfirmedBalance)
-        val ethAmountString = getString(R.string.eth_amount, totalEthAmount)
-        val statusMessage = getString(R.string.your_balance_eth_fiat, ethAmountString, currentBalance.localBalance)
-        balance.text = statusMessage
+    private fun renderERC20TokenBalance(ERCToken: ERCToken) {
+        val tokenValue = TypeConverter.formatHexString(ERCToken.value, ERCToken.decimals, "0.000000")
+        balance.text = getString(R.string.erc20_balance, ERCToken.symbol, tokenValue, ERCToken.symbol)
     }
 
     private fun initTextListeners() {

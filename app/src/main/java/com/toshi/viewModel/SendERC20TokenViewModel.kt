@@ -17,45 +17,20 @@
 
 package com.toshi.viewModel
 
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.toshi.crypto.util.TypeConverter
 import com.toshi.extensions.createSafeBigDecimal
 import com.toshi.extensions.isValidDecimal
 import com.toshi.manager.model.ERC20TokenPaymentTask
 import com.toshi.manager.model.PaymentTask
-import com.toshi.model.network.Balance
 import com.toshi.model.network.token.ERCToken
 import com.toshi.util.LogUtil
 import com.toshi.view.BaseApplication
-import rx.android.schedulers.AndroidSchedulers
-import rx.subscriptions.CompositeSubscription
 import java.math.BigDecimal
 
-class SendERC20TokenViewModel(val token: ERCToken, fetchEthBalance: Boolean) : ViewModel() {
+class SendERC20TokenViewModel(val token: ERCToken) : ViewModel() {
 
-    private val subscriptions by lazy { CompositeSubscription() }
-    private val balanceManager by lazy { BaseApplication.get().balanceManager }
     private val transactionManager by lazy { BaseApplication.get().transactionManager }
-    val ethBalance by lazy { MutableLiveData<Balance>() }
-
-    init {
-        if (fetchEthBalance) getBalance()
-    }
-
-    private fun getBalance() {
-        val sub = balanceManager
-                .balanceObservable
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter { balance -> balance != null }
-                .flatMap { balance -> balance.getBalanceWithLocalBalance().toObservable() }
-                .subscribe(
-                        { ethBalance.value = it },
-                        { LogUtil.e(javaClass, "Error while getting ethBalance $it") }
-                )
-
-        subscriptions.add(sub)
-    }
 
     fun sendPayment(paymentTask: PaymentTask) {
         when (paymentTask) {
@@ -70,4 +45,7 @@ class SendERC20TokenViewModel(val token: ERCToken, fetchEthBalance: Boolean) : V
         val inputAmount = createSafeBigDecimal(amount)
         val balanceAmount = BigDecimal(TypeConverter.formatHexString(token.value, token.decimals, null))
         return inputAmount.compareTo(balanceAmount) == 0 || inputAmount.compareTo(balanceAmount) == -1
+    }
+
+    fun getMaxAmount(): String = TypeConverter.formatHexString(token.value, token.decimals, null)
 }

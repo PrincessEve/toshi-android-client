@@ -25,17 +25,15 @@ import com.toshi.viewModel.SendERC20TokenViewModel;
 
 public class SendERC20TokenViewModelFactory implements ViewModelProvider.Factory {
 
-    private boolean fetchEthBalance;
-    private ERCToken ERCToken;
+    private ERCToken token;
 
-    public SendERC20TokenViewModelFactory(final ERCToken ERCToken, final boolean fetchEthBalance) {
-        this.ERCToken = ERCToken;
-        this.fetchEthBalance = fetchEthBalance;
+    public SendERC20TokenViewModelFactory(final ERCToken token) {
+        this.token = token;
     }
 
     @NonNull
     @Override
     public SendERC20TokenViewModel create(@NonNull Class modelClass) {
-        return new SendERC20TokenViewModel(this.ERCToken, this.fetchEthBalance);
+        return new SendERC20TokenViewModel(this.token);
     }
 }
