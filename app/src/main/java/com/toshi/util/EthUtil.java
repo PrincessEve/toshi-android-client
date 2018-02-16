@@ -19,9 +19,11 @@ package com.toshi.util;
 
 
 import com.toshi.crypto.util.TypeConverter;
+import com.toshi.model.network.ExchangeRate;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 
 public class EthUtil {
 
@@ -72,5 +74,23 @@ public class EthUtil {
 
     public static boolean isLargeEnoughForSending(final BigDecimal eth) {
         return eth.setScale(NUM_DECIMAL_PLACES, BigDecimal.ROUND_DOWN).compareTo(BigDecimal.ZERO) == 1;
+    }
+
+    public static String decimalStringToEncodedEthAmount(final String decimalString) {
+        if (decimalString.isEmpty()) return "0x0";
+        final BigInteger weiAmount = EthUtil.ethToWei(new BigDecimal(decimalString));
+        return TypeConverter.toJsonHex(weiAmount);
+    }
+
+    public static String ethToFiat(final ExchangeRate exchangeRate, final BigDecimal ethAmount) {
+        final BigDecimal marketRate = exchangeRate.getRate();
+        final BigDecimal fiatAmount = marketRate.multiply(ethAmount, MathContext.DECIMAL64);
+        return fiatAmount.toString();
+    }
+
+    public static String fiatToEth(final ExchangeRate exchangeRate, final BigDecimal fiatAmount) {
+        final BigDecimal marketRate = exchangeRate.getRate();
+        final BigDecimal ethAmount = fiatAmount.divide(marketRate, BIG_DECIMAL_SCALE, BigDecimal.ROUND_HALF_EVEN);
+        return ethAmount.toString();
     }
 }
