@@ -38,6 +38,7 @@ import com.toshi.util.EthUtil
 import com.toshi.util.PaymentType
 import com.toshi.util.QrCodeHandler
 import com.toshi.util.ScannerResultType
+import com.toshi.view.adapter.listeners.TextChangedListener
 import com.toshi.view.fragment.PaymentConfirmationFragment
 import com.toshi.viewModel.SendERC20TokenViewModel
 import com.toshi.viewModel.ViewModelFactory.SendERC20TokenViewModelFactory
@@ -50,7 +51,6 @@ class SendERC20TokenActivity : AppCompatActivity() {
     }
 
     private lateinit var viewModel: SendERC20TokenViewModel
-    private var token: Token? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,15 +61,21 @@ class SendERC20TokenActivity : AppCompatActivity() {
     private fun init() {
         initViewModel()
         initClickListeners()
-        token = Token.getTokenFromIntent(intent)
-        updateUi(token)
+        updateUi()
         initObservers()
+        initTextListeners()
     }
 
     private fun initViewModel() {
+        val token = Token.getTokenFromIntent(intent)
+        if (token == null) {
+            toast(R.string.invalid_token)
+            finish()
+            return
+        }
         viewModel = ViewModelProviders.of(
                 this,
-                SendERC20TokenViewModelFactory(false)
+                SendERC20TokenViewModelFactory(token, false)
         ).get(SendERC20TokenViewModel::class.java)
     }
 
@@ -96,26 +102,17 @@ class SendERC20TokenActivity : AppCompatActivity() {
     }
 
     private fun setMaxAmount() {
-        val token = token
-        if (token != null) {
-            val tokenValue = TypeConverter.formatHexString(token.value, token.decimals, "#.000000")
-            toAmount.setText(tokenValue)
-        } else toast(R.string.invalid_token)
+        val token = viewModel.token
+        val tokenValue = TypeConverter.formatHexString(token.value, token.decimals, null)
+        toAmount.setText(tokenValue)
     }
 
     private fun validateAddressAndShowPaymentConfirmation() {
+        val token = viewModel.token
         addressError.isVisible(false)
-        token?.let {
-            val address = toAddress.text.toString()
-            val transferValue = toAmount.text.toString()
-            if (isPaymentAddressValid(address)) showPaymentConfirmation(it, transferValue, address)
-            else toast(R.string.invalid_payment_address)
-        } ?: toast(R.string.invalid_token)
-    }
-
-    private fun showAddressError() {
-        addressError.isVisible(true)
-        addressError.text = getString(R.string.invalid_payment_address)
+        val address = toAddress.text.toString()
+        val transferValue = toAmount.text.toString()
+        showPaymentConfirmation(token, transferValue, address)
     }
 
     private fun showPaymentConfirmation(token: Token, value: String, toAddress: String) {
@@ -134,11 +131,8 @@ class SendERC20TokenActivity : AppCompatActivity() {
 
     private fun onPaymentApproved(paymentTask: PaymentTask) = viewModel.sendPayment(paymentTask)
 
-    private fun updateUi(token: Token?) {
-        if (token == null) {
-            toast(R.string.invalid_token)
-            return
-        }
+    private fun updateUi() {
+        val token = viewModel.token
         renderToolbar(token)
         renderERC20TokenBalance(token)
         setAmountSuffix(token)
@@ -166,6 +160,73 @@ class SendERC20TokenActivity : AppCompatActivity() {
         val ethAmountString = getString(R.string.eth_amount, totalEthAmount)
         val statusMessage = getString(R.string.your_balance_eth_fiat, ethAmountString, currentBalance.localBalance)
         balance.text = statusMessage
+    }
+
+    private fun initTextListeners() {
+        toAmount.addTextChangedListener(object : TextChangedListener() {
+            override fun onTextChanged(amountInput: CharSequence?, start: Int, before: Int, count: Int) {
+                validateAmount(amountInput.toString())
+                enableOrDisableContinueButton()
+            }
+        })
+        toAddress.addTextChangedListener(object : TextChangedListener() {
+            override fun onTextChanged(addressInput: CharSequence?, start: Int, before: Int, count: Int) {
+                validateAddress(addressInput.toString())
+                enableOrDisableContinueButton()
+            }
+        })
+    }
+
+    private fun validateAmount(amountInput: String) {
+        amountError.isVisible(false)
+        if (amountInput.isEmpty()) return
+        val hasEnoughBalance = viewModel.hasEnoughBalance(amountInput)
+        val isAmountValid = viewModel.isAmountValid(amountInput)
+        if (!hasEnoughBalance) showAmountError()
+        if (!isAmountValid) showInvalidAmountError()
+    }
+
+    private fun validateAddress(addressInput: String) {
+        addressError.isVisible(false)
+        if (addressInput.isEmpty()) return
+        val isAddressValid = isPaymentAddressValid(addressInput)
+        if (!isAddressValid) showAddressError()
+    }
+
+    private fun enableOrDisableContinueButton() {
+        val amount = toAmount.text.toString()
+        val address = toAddress.text.toString()
+        val isAmountValid = viewModel.isAmountValid(amount) && viewModel.hasEnoughBalance(amount)
+        val isAddressValid = isPaymentAddressValid(address)
+        if (isAmountValid && isAddressValid) enableContinueButton()
+        else disableContinueButton()
+    }
+
+    private fun showInvalidAmountError() {
+        amountError.isVisible(true)
+        amountError.text = getString(R.string.invalid_format)
+    }
+
+    private fun showAmountError() {
+        val token = viewModel.token
+        val balanceAmount = TypeConverter.formatHexString(token.value, token.decimals, "0.000000")
+        amountError.isVisible(true)
+        amountError.text = getString(R.string.insufficient_balance, balanceAmount)
+    }
+
+    private fun showAddressError() {
+        addressError.isVisible(true)
+        addressError.text = getString(R.string.invalid_payment_address)
+    }
+
+    private fun enableContinueButton() {
+        continueBtn.isEnabled = true
+        continueBtn.setBackgroundResource(R.drawable.background_with_radius_primary_color)
+    }
+
+    private fun disableContinueButton() {
+        continueBtn.isEnabled = true
+        continueBtn.setBackgroundResource(R.drawable.background_with_radius_disabled)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultIntent: Intent?) {

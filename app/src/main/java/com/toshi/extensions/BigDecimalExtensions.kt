@@ -15,27 +15,24 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.toshi.viewModel.ViewModelFactory;
+@file:JvmName("BigDecimalUtil")
+package com.toshi.extensions
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.support.annotation.NonNull;
+import java.math.BigDecimal
 
-import com.toshi.model.network.Token;
-import com.toshi.viewModel.SendERC20TokenViewModel;
-
-public class SendERC20TokenViewModelFactory implements ViewModelProvider.Factory {
-
-    private boolean fetchEthBalance;
-    private Token token;
-
-    public SendERC20TokenViewModelFactory(final Token token, final boolean fetchEthBalance) {
-        this.token = token;
-        this.fetchEthBalance = fetchEthBalance;
+fun isValidDecimal(inputAmount: String): Boolean {
+    return try {
+        BigDecimal(inputAmount)
+        true
+    } catch (e: NumberFormatException) {
+        false
     }
+}
 
-    @NonNull
-    @Override
-    public SendERC20TokenViewModel create(@NonNull Class modelClass) {
-        return new SendERC20TokenViewModel(this.token, this.fetchEthBalance);
+fun createSafeBigDecimal(inputValue: String): BigDecimal {
+    return try {
+        BigDecimal(inputValue)
+    } catch (e: NumberFormatException) {
+        return BigDecimal("0")
     }
 }

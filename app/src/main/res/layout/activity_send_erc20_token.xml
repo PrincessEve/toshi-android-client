@@ -285,9 +285,10 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 style="@style/FlatButton"
                 android:textAllCaps="true"
-                android:background="@drawable/background_with_radius_primary_color"
+                android:background="@drawable/background_with_radius_disabled"
                 android:textColor="#FFFFFF"
-                android:text="@string/continue_"/>
+                android:text="@string/continue_"
+                android:enabled="false"/>
 
             <android.support.v4.widget.Space
                 android:layout_width="0dp"

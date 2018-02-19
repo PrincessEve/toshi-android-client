@@ -22,6 +22,7 @@ import android.support.v7.app.AppCompatActivity
 import com.toshi.R
 import com.toshi.crypto.util.TypeConverter
 import com.toshi.extensions.startActivity
+import com.toshi.extensions.toast
 import com.toshi.model.network.Token
 import com.toshi.util.ImageUtil
 import kotlinx.android.synthetic.main.activity_view_erc20.*
@@ -36,6 +37,11 @@ class ViewERC20Activity : AppCompatActivity() {
 
     private fun init() {
         val token = Token.getTokenFromIntent(intent)
+        if (token == null) {
+            toast(R.string.invalid_token)
+            finish()
+            return
+        }
         renderUi(token)
         initClickListeners(token)
     }

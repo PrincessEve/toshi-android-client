@@ -52,7 +52,8 @@ data class Token(
             }
         }
 
-        fun getTokenFromIntent(intent: Intent): Token {
+        fun getTokenFromIntent(intent: Intent): Token? {
+            if (!hasAllExtras(intent)) return null
             return Token(
                     intent.getStringExtra(SYMBOL),
                     intent.getStringExtra(NAME),
@@ -62,6 +63,13 @@ data class Token(
                     intent.getStringExtra(FORMAT),
                     intent.getStringExtra(ICON)
             )
+        }
+
+        private fun hasAllExtras(intent: Intent): Boolean {
+            return intent.hasExtra(SYMBOL) && intent.hasExtra(NAME)
+                    && intent.hasExtra(DECIMALS) && intent.hasExtra(VALUE)
+                    && intent.hasExtra(CONTRACT_ADDRESS) && intent.hasExtra(FORMAT)
+                    && intent.hasExtra(ICON)
         }
     }
 }
