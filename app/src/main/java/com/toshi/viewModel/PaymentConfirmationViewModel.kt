@@ -21,16 +21,20 @@ import android.arch.lifecycle.ViewModel
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Pair
+import com.toshi.R
 import com.toshi.manager.model.ERC20TokenPaymentTask
 import com.toshi.manager.model.PaymentTask
 import com.toshi.manager.model.W3PaymentTask
+import com.toshi.model.local.CurrencyMode
 import com.toshi.model.local.UnsignedW3Transaction
 import com.toshi.model.network.Balance
 import com.toshi.model.sofa.SofaAdapters
+import com.toshi.util.EthUtil
 import com.toshi.util.LogUtil
 import com.toshi.util.SingleLiveEvent
 import com.toshi.view.BaseApplication
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.CALLBACK_ID
+import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.CURRENCY_MODE
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.DAPP_FAVICON
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.DAPP_TITLE
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.DAPP_URL
@@ -107,6 +111,10 @@ class PaymentConfirmationViewModel : ViewModel() {
     fun getDappTitle() = bundle.getString(DAPP_TITLE)
     fun getDappFavicon() = bundle.getParcelable<Bitmap>(DAPP_FAVICON)
     fun isSendingMaxAmount() = bundle.getBoolean(SEND_MAX_AMOUNT, false)
+    fun getCurrencyMode(): CurrencyMode {
+        val currencyMode = bundle.getSerializable(CURRENCY_MODE) ?: CurrencyMode.FIAT
+        return currencyMode as CurrencyMode
+    }
 
     private fun getPaymentTaskWithToshiId(toshiId: String, ethAmount: String) {
         val sub = Single.zip(
@@ -223,6 +231,36 @@ class PaymentConfirmationViewModel : ViewModel() {
                 )
 
         subscriptions.add(sub)
+    }
+
+    fun getPaymentAmount(paymentTask: PaymentTask, currencyMode: CurrencyMode): String {
+        return when (currencyMode) {
+            CurrencyMode.ETH -> {
+                val ethAmount = EthUtil.ethAmountToUserVisibleString(paymentTask.paymentAmount.ethAmount)
+                return BaseApplication.get().getString(R.string.eth_balance, ethAmount)
+            }
+            CurrencyMode.FIAT -> paymentTask.paymentAmount.localAmount
+        }
+    }
+
+    fun getGasPrice(paymentTask: PaymentTask, currencyMode: CurrencyMode): String {
+        return when (currencyMode) {
+            CurrencyMode.ETH -> {
+                val ethAmount = EthUtil.ethAmountToUserVisibleString(paymentTask.gasPrice.ethAmount)
+                return BaseApplication.get().getString(R.string.eth_balance, ethAmount)
+            }
+            CurrencyMode.FIAT -> paymentTask.gasPrice.localAmount
+        }
+    }
+
+    fun getTotalAmount(paymentTask: PaymentTask, currencyMode: CurrencyMode): String {
+        return when (currencyMode) {
+            CurrencyMode.ETH -> {
+                val ethAmount = EthUtil.ethAmountToUserVisibleString(paymentTask.totalAmount.ethAmount)
+                return BaseApplication.get().getString(R.string.eth_balance, ethAmount)
+            }
+            CurrencyMode.FIAT -> paymentTask.totalAmount.localAmount
+        }
     }
 
     override fun onCleared() {

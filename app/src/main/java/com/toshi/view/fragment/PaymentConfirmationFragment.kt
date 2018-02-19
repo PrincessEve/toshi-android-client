@@ -36,6 +36,7 @@ import com.toshi.manager.model.ExternalPaymentTask
 import com.toshi.manager.model.PaymentTask
 import com.toshi.manager.model.ToshiPaymentTask
 import com.toshi.manager.model.W3PaymentTask
+import com.toshi.model.local.CurrencyMode
 import com.toshi.model.local.User
 import com.toshi.model.network.Balance
 import com.toshi.util.EthUtil
@@ -208,11 +209,39 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
 
     private fun renderETHPaymentInfo(paymentTask: PaymentTask) {
         ethPaymentInfoWrapper.isVisible(true)
-        amount.text = paymentTask.paymentAmount.localAmount
-        gasPrice.text = paymentTask.gasPrice.localAmount
-        total.text = paymentTask.totalAmount.localAmount
-        val totalEthAmount = EthUtil.ethAmountToUserVisibleString(paymentTask.totalAmount.ethAmount)
-        totalEth.text = getString(R.string.eth_amount, totalEthAmount)
+        val currencyMode = viewModel.getCurrencyMode()
+        when (currencyMode) {
+            CurrencyMode.ETH -> renderPaymentInfoInETHMode(paymentTask)
+            CurrencyMode.FIAT -> renderPaymentInfoInFiatMode(paymentTask)
+        }
+    }
+
+    private fun renderPaymentInfoInETHMode(paymentTask: PaymentTask) {
+        val currencyMode = CurrencyMode.ETH
+        amount.text = viewModel.getPaymentAmount(paymentTask, currencyMode)
+        gasPrice.text = viewModel.getGasPrice(paymentTask, currencyMode)
+        total.text = viewModel.getTotalAmount(paymentTask, currencyMode)
+
+        val localAmount = viewModel.getPaymentAmount(paymentTask, CurrencyMode.FIAT)
+        convertedAmount.text = localAmount
+        val localGasAmount = viewModel.getGasPrice(paymentTask, CurrencyMode.FIAT)
+        convertedGasPrice.text = localGasAmount
+        val totalAmount = viewModel.getTotalAmount(paymentTask, CurrencyMode.FIAT)
+        convertedTotal.text = totalAmount
+    }
+
+    private fun renderPaymentInfoInFiatMode(paymentTask: PaymentTask) {
+        val currencyMode = CurrencyMode.FIAT
+        amount.text = viewModel.getPaymentAmount(paymentTask, currencyMode)
+        gasPrice.text = viewModel.getGasPrice(paymentTask, currencyMode)
+        total.text = viewModel.getTotalAmount(paymentTask, currencyMode)
+
+        val localAmount = viewModel.getPaymentAmount(paymentTask, CurrencyMode.ETH)
+        convertedAmount.text = localAmount
+        val localGasAmount = viewModel.getGasPrice(paymentTask, CurrencyMode.ETH)
+        convertedGasPrice.text = localGasAmount
+        val totalAmount = viewModel.getTotalAmount(paymentTask, CurrencyMode.ETH)
+        convertedTotal.text = totalAmount
     }
 
     private fun handlePaymentTaskError() {
@@ -283,6 +312,7 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
         const val TOKEN_SYMBOL = "token_symbol"
         const val TOKEN_DECIMALS = "token_decimals"
         const val SEND_MAX_AMOUNT = "send_max_amount"
+        const val CURRENCY_MODE = "currency"
 
         fun newInstanceToshiPayment(toshiId: String,
                                     value: String,
@@ -299,11 +329,13 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
                                        value: String,
                                        memo: String? = null,
                                        @PaymentType.Type paymentType: Int,
-                                       sendMaxAmount: Boolean = false): PaymentConfirmationFragment {
+                                       sendMaxAmount: Boolean = false,
+                                       currencyMode: CurrencyMode = CurrencyMode.FIAT): PaymentConfirmationFragment {
             val bundle = Bundle().apply {
                 putInt(CONFIRMATION_TYPE, PaymentConfirmationType.EXTERNAL)
                 putString(PAYMENT_ADDRESS, paymentAddress)
                 putBoolean(SEND_MAX_AMOUNT, sendMaxAmount)
+                putSerializable(CURRENCY_MODE, currencyMode)
             }
             return newInstance(bundle, value, memo, paymentType)
         }

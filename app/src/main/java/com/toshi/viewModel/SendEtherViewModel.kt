@@ -26,6 +26,7 @@ import com.toshi.extensions.createSafeBigDecimal
 import com.toshi.manager.model.ExternalPaymentTask
 import com.toshi.manager.model.PaymentTask
 import com.toshi.manager.model.ToshiPaymentTask
+import com.toshi.model.local.CurrencyMode
 import com.toshi.model.network.Balance
 import com.toshi.model.network.ExchangeRate
 import com.toshi.util.CurrencyUtil
@@ -45,7 +46,7 @@ class SendEtherViewModel : ViewModel() {
     private val balanceManager by lazy { BaseApplication.get().balanceManager }
     private val transactionManager by lazy { BaseApplication.get().transactionManager }
     private var exchangeRate: ExchangeRate? = null
-    private var currencyMode = CurrencyMode.ETH
+    var currencyMode = CurrencyMode.ETH
     val ethBalance by lazy { MutableLiveData<Balance>() }
     var sendMaxAmount = false
 
@@ -225,9 +226,4 @@ class SendEtherViewModel : ViewModel() {
         super.onCleared()
         subscriptions.clear()
     }
-}
-
-enum class CurrencyMode {
-    ETH(),
-    FIAT()
 }

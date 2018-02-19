@@ -137,7 +137,8 @@ class SendETHActivity : AppCompatActivity() {
                 paymentAddress = toAddress,
                 value = value,
                 paymentType = PaymentType.TYPE_SEND,
-                sendMaxAmount = viewModel.sendMaxAmount
+                sendMaxAmount = viewModel.sendMaxAmount,
+                currencyMode = viewModel.currencyMode
         )
         dialog.setOnPaymentConfirmationApprovedListener { onPaymentApproved(it) }
         dialog.show(supportFragmentManager, PaymentConfirmationFragment.TAG)

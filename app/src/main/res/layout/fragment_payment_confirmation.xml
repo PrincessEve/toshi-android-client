@@ -268,7 +268,7 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:visibility="gone"
-                tools:visibility="gone">
+                tools:visibility="visible">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -286,13 +286,29 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"/>
 
-                    <TextView
-                        android:id="@+id/amount"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/textColorPrimary"
-                        tools:text="$6.10 USD"/>
+                        android:orientation="vertical"
+                        android:gravity="right">
+
+                        <TextView
+                            android:id="@+id/amount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/textColorPrimary"
+                            tools:text="$6.10 USD"/>
+
+                        <TextView
+                            android:id="@+id/convertedAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/textColorSecondary"
+                            tools:text="$6.10 USD"/>
+
+                    </LinearLayout>
                 </LinearLayout>
 
                 <Space
@@ -315,13 +331,29 @@
                         android:layout_height="0dp"
                         android:layout_weight="1"/>
 
-                    <TextView
-                        android:id="@+id/gasPrice"
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="16sp"
-                        android:textColor="@color/textColorPrimary"
-                        tools:text="$1.50 USD"/>
+                        android:orientation="vertical"
+                        android:gravity="right">
+
+                        <TextView
+                            android:id="@+id/gasPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/textColorPrimary"
+                            tools:text="$1.50 USD"/>
+
+                        <TextView
+                            android:id="@+id/convertedGasPrice"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="16sp"
+                            android:textColor="@color/textColorSecondary"
+                            tools:text="$1.50 USD"/>
+
+                    </LinearLayout>
                 </LinearLayout>
 
                 <Space
@@ -363,12 +395,8 @@
                         tools:text="$7.60 USD"/>
                 </LinearLayout>
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="8dp" />
-
                 <TextView
-                    android:id="@+id/totalEth"
+                    android:id="@+id/convertedTotal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right"
@@ -388,7 +416,7 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:visibility="gone"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"

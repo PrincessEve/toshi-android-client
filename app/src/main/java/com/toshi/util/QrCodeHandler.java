@@ -31,6 +31,7 @@ import com.toshi.exception.InvalidQrCodePayment;
 import com.toshi.manager.model.ExternalPaymentTask;
 import com.toshi.manager.model.PaymentTask;
 import com.toshi.manager.model.ToshiPaymentTask;
+import com.toshi.model.local.CurrencyMode;
 import com.toshi.model.local.QrCodePayment;
 import com.toshi.model.local.User;
 import com.toshi.model.sofa.payment.Payment;
@@ -147,7 +148,8 @@ public class QrCodeHandler {
                                     payment.getValue(),
                                     payment.getMemo(),
                                     PaymentType.TYPE_REQUEST,
-                                    false
+                                    false,
+                                    CurrencyMode.FIAT
                             );
             dialog.show(this.activity.getSupportFragmentManager(), PaymentConfirmationFragment.TAG);
             dialog.setOnPaymentConfirmationApprovedListener(this::onPaymentApproved)
