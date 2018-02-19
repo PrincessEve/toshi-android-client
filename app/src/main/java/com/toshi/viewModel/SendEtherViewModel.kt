@@ -132,12 +132,16 @@ class SendEtherViewModel : ViewModel() {
 
     fun ethToFiat(inputValue: String): String {
         if (exchangeRate == null) return ""
-        return EthUtil.ethToFiat(exchangeRate, createSafeBigDecimal(inputValue))
+        val convertedInput = createSafeBigDecimal(inputValue)
+                .stripTrailingZeros()
+        return EthUtil.ethToFiat(exchangeRate, convertedInput)
     }
 
     fun fiatToEth(inputValue: String): String {
         if (exchangeRate == null) return ""
-        return EthUtil.fiatToEth(exchangeRate, createSafeBigDecimal(inputValue))
+        val convertedInput = createSafeBigDecimal(inputValue)
+                .stripTrailingZeros()
+        return EthUtil.fiatToEth(exchangeRate, convertedInput)
     }
 
     fun getCurrencyCode(): String {
