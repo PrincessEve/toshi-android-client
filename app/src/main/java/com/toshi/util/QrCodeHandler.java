@@ -36,7 +36,6 @@ import com.toshi.model.local.User;
 import com.toshi.model.sofa.Payment;
 import com.toshi.view.BaseApplication;
 import com.toshi.view.activity.ChatActivity;
-import com.toshi.view.activity.SendActivity;
 import com.toshi.view.activity.ViewUserActivity;
 import com.toshi.view.fragment.PaymentConfirmationFragment;
 
@@ -55,6 +54,7 @@ public class QrCodeHandler {
     }
 
     private static final String WEB_SIGNIN = "web-signin:";
+    public static final String ACTIVITY_RESULT = "activity_result";
 
     private CompositeSubscription subscriptions;
     private AppCompatActivity activity;
@@ -240,7 +240,7 @@ public class QrCodeHandler {
     private void finishActivityWithResult(final QrCode qrCode) {
         if (this.activity == null) return;
         final Intent intent = new Intent()
-                .putExtra(SendActivity.ACTIVITY_RESULT, qrCode.getPayloadAsAddress().getHexAddress());
+                .putExtra(ACTIVITY_RESULT, qrCode.getPayloadAsAddress().getHexAddress());
         this.activity.setResult(Activity.RESULT_OK, intent);
         this.activity.finish();
     }

@@ -344,4 +344,13 @@
     <string name="share_wallet_address">Share Wallet Address</string>
     <string name="wallet_info">Receive Ethereum and tokens to your personal public address.</string>
     <string name="receive">Receive</string>
+    <string name="your_balance_eth_fiat">Your balance: %1$s (%2$s)</string>
+    <string name="send_token">Send %s</string>
+    <string name="erc20_balance">Your %1$s balance: %2$s %3$s</string>
+    <string name="hex_hint">0x…</string>
+    <string name="to_address">To</string>
+    <string name="paste">Paste</string>
+    <string name="max">Max.</string>
+    <string name="_0_0">0.0</string>
+    <string name="invalid_token">Invalid token</string>
 </resources>

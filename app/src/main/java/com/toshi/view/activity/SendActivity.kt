@@ -32,6 +32,7 @@ import com.toshi.manager.model.PaymentTask
 import com.toshi.model.local.Networks
 import com.toshi.util.BuildTypes
 import com.toshi.util.PaymentType
+import com.toshi.util.QrCodeHandler
 import com.toshi.util.ScannerResultType
 import com.toshi.view.adapter.listeners.TextChangedListener
 import com.toshi.view.fragment.PaymentConfirmationFragment
@@ -42,7 +43,6 @@ class SendActivity : AppCompatActivity() {
 
     companion object {
         const val INTENT_EXTRA__ETH_AMOUNT = "eth_amount"
-        const val ACTIVITY_RESULT = "activity_result"
         private const val PAYMENT_SCAN_REQUEST_CODE = 200
     }
 
@@ -151,7 +151,7 @@ class SendActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, resultIntent)
         if (requestCode != PAYMENT_SCAN_REQUEST_CODE || resultCode != Activity.RESULT_OK) return
         resultIntent?.let {
-            val paymentAddress = it.getStringExtra(SendActivity.ACTIVITY_RESULT)
+            val paymentAddress = it.getStringExtra(QrCodeHandler.ACTIVITY_RESULT)
             recipientAddress.setText(paymentAddress)
         }
     }

@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ 	Copyright (c) 2017. Toshi Inc
+  ~
+  ~ 	This program is free software: you can redistribute it and/or modify
+  ~     it under the terms of the GNU General Public License as published by
+  ~     the Free Software Foundation, either version 3 of the License, or
+  ~     (at your option) any later version.
+  ~
+  ~     This program is distributed in the hope that it will be useful,
+  ~     but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~     GNU General Public License for more details.
+  ~
+  ~     You should have received a copy of the GNU General Public License
+  ~     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        style="@style/Toolbar"
+        android:background="@color/windowBackground"
+        android:elevation="2dp">
+
+        <ImageButton
+            android:id="@+id/closeButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:tint="@color/textColorSecondary"
+            app:srcCompat="@drawable/ic_arrow_back"
+            style="@style/closeButtonStyle"/>
+
+        <android.support.v4.widget.Space
+            android:layout_width="16dp"
+            android:layout_height="0dp" />
+
+        <TextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:ellipsize="end"
+            style="@style/TransparentToolbar.TitleText"
+            tools:text="Send 0x"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/amount"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="12dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <com.toshi.view.custom.SuffixEditText
+                    android:id="@+id/toAmount"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:textSize="36sp"
+                    android:singleLine="true"
+                    android:maxLines="1"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/textColorPrimary"
+                    android:textColorHint="@color/textColorHint"
+                    android:background="@null"
+                    android:hint="@string/_0_0" />
+
+                <android.support.v4.widget.Space
+                    android:layout_width="8dp"
+                    android:layout_height="0dp" />
+
+                <Button
+                    android:id="@+id/max"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    style="@style/FlatButton"
+                    android:stateListAnimator="@null"
+                    android:textSize="14sp"
+                    android:textAllCaps="true"
+                    android:textColor="@color/textColorPrimary"
+                    android:text="@string/max"
+                    android:background="@drawable/background_with_radius_border"/>
+
+                <ImageButton
+                    android:id="@+id/currencySwitcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    android:layout_marginLeft="8dp"
+                    android:background="@drawable/background_with_radius_border"
+                    app:srcCompat="@drawable/ic_rotated_switch"
+                    style="@style/closeButtonStyle"
+                    android:visibility="gone"/>
+
+                <android.support.v4.widget.Space
+                    android:layout_width="@dimen/activity_horizontal_margin"
+                    android:layout_height="0dp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/toAmountConverted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginTop="12dp"
+                android:textSize="16sp"
+                android:textColor="@color/textColorPrimary"
+                tools:text="$0.00 USD"
+                android:visibility="gone"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:id="@+id/balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:textColor="@color/textColorSecondary"
+                tools:text="Your balance: 1000 ETH ($1.690.89 USD)"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="20dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:textSize="14sp"
+                android:textColor="@color/colorPrimary"
+                android:text="@string/to_address"/>
+
+            <EditText
+                android:id="@+id/toAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:maxLines="1"
+                android:inputType="textNoSuggestions"
+                android:textColor="@color/textColorPrimary"
+                android:textColorHint="@color/textColorHint"
+                android:hint="@string/hex_hint"
+                android:background="@null"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="20dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin">
+
+                <Button
+                    android:id="@+id/paste"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    style="@style/FlatButton"
+                    android:stateListAnimator="@null"
+                    android:textAllCaps="true"
+                    android:textSize="14sp"
+                    android:textColor="@color/textColorPrimary"
+                    android:text="@string/paste"
+                    android:background="@drawable/background_with_radius_border"/>
+
+                <android.support.v4.widget.Space
+                    android:layout_width="8dp"
+                    android:layout_height="0dp" />
+
+                <ImageButton
+                    android:id="@+id/qrCodeBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="6dp"
+                    app:srcCompat="@drawable/ic_scan_qr_code"
+                    android:background="@drawable/background_with_radius_border"
+                    style="@style/closeButtonStyle" />
+
+            </LinearLayout>
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="20dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:minHeight="20dp"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/continueBtn"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                style="@style/FlatButton"
+                android:textAllCaps="true"
+                android:background="@drawable/background_with_radius_primary_color"
+                android:textColor="#FFFFFF"
+                android:text="@string/send"/>
+
+            <android.support.v4.widget.Space
+                android:layout_width="0dp"
+                android:layout_height="@dimen/activity_horizontal_margin" />
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
