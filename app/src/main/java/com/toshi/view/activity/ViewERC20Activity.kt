@@ -80,7 +80,7 @@ class ViewERC20Activity : AppCompatActivity() {
         amount.text = getString(R.string.eth_balance, etherToken.etherValue)
         fiat.text = etherToken.fiatValue
         fiat.isVisible(true)
-        //ImageUtil.load(etherToken.icon, avatar)
+        avatar.setImageResource(etherToken.icon)
     }
 
     private fun renderERCTokenUi(ERCToken: ERCToken) {

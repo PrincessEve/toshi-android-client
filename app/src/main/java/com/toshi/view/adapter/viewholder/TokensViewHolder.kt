@@ -63,7 +63,7 @@ class TokensViewHolder(private val tokenType: TokenType, itemView: View?) : Recy
         itemView.fiatValue.isVisible(true)
         itemView.value.setTextColor(itemView.getColorById(R.color.textColorPrimary))
         itemView.setOnClickListener { tokenListener?.invoke(etherToken) }
-        //ImageUtil.load(ERCToken.icon, itemView.avatar)
+        itemView.avatar.setImageResource(etherToken.icon)
     }
 
     private fun showERC20View(ERCToken: ERCToken, tokenListener: ((ERCToken) -> Unit)?) {

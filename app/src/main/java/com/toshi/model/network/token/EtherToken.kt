@@ -18,24 +18,28 @@
 package com.toshi.model.network.token
 
 import android.content.Intent
+import com.toshi.R
 import com.toshi.view.activity.ViewERC20Activity
 
 data class EtherToken(
         val symbol: String,
         val name: String,
+        val icon: Int,
         val etherValue: String,
         val fiatValue: String
 ) : Token() {
     companion object {
         fun create(symbol: String = "ETH",
                    name: String = "Ethereum",
+                   icon: Int = R.drawable.ic_ether,
                    etherValue: String,
                    fiatValue: String): EtherToken {
-            return EtherToken(symbol, name, etherValue, fiatValue)
+            return EtherToken(symbol, name, icon, etherValue, fiatValue)
         }
 
         private const val SYMBOL = "symbol"
         private const val NAME = "name"
+        private const val ICON = "icon"
         private const val ETHER_VALUE = "eth"
         private const val FIAT_VALUE = "fiat"
 
@@ -52,10 +56,11 @@ data class EtherToken(
         fun getTokenFromIntent(intent: Intent): EtherToken? {
             if (!hasAllExtras(intent)) return null
             return EtherToken(
-                    intent.getStringExtra(SYMBOL),
-                    intent.getStringExtra(NAME),
-                    intent.getStringExtra(ETHER_VALUE),
-                    intent.getStringExtra(FIAT_VALUE)
+                    symbol = intent.getStringExtra(SYMBOL),
+                    name = intent.getStringExtra(NAME),
+                    icon = intent.getIntExtra(ICON, R.drawable.ic_ether),
+                    etherValue = intent.getStringExtra(ETHER_VALUE),
+                    fiatValue = intent.getStringExtra(FIAT_VALUE)
             )
         }
 
