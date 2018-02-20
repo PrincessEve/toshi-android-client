@@ -260,7 +260,7 @@
                 android:textAllCaps="true"
                 android:background="@drawable/background_with_radius_primary_color"
                 android:textColor="#FFFFFF"
-                android:text="@string/send"/>
+                android:text="@string/continue_"/>
 
             <android.support.v4.widget.Space
                 android:layout_width="0dp"

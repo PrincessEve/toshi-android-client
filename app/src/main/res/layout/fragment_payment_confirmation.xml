@@ -258,17 +258,17 @@
                 android:text="@string/fetching_network_fees"
                 tools:visibility="visible"/>
 
-            <!-- Payment info (Amount, gas price and  total) -->
+            <!-- ETH Payment info (Amount, gas price and  total) -->
 
             <LinearLayout
-                android:id="@+id/paymentInfoWrapper"
+                android:id="@+id/ethPaymentInfoWrapper"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:visibility="gone"
-                tools:visibility="visible">
+                tools:visibility="gone">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -375,6 +375,87 @@
                     android:textSize="16sp"
                     android:textColor="@color/textColorSecondaryTransparent"
                     tools:text="0.005063"/>
+
+            </LinearLayout>
+
+            <!-- ERC20 Payment info (Amount, gas price and  total) -->
+
+            <LinearLayout
+                android:id="@+id/ERC20PaymentInfoWrapper"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/textColorSecondaryTransparent"
+                        android:text="@string/amount"/>
+
+                    <android.support.v4.widget.Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:id="@+id/ERC20Amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/textColorPrimary"
+                        tools:text="6.10 OMG"/>
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="12dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/textColorSecondaryTransparent"
+                        android:text="@string/est_network_fees"/>
+
+                    <android.support.v4.widget.Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:id="@+id/ERC20GasPrice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textColor="@color/textColorPrimary"
+                        tools:text="0.0001 ETH"/>
+                </LinearLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="8dp" />
+
+                <TextView
+                    android:id="@+id/ERC20GasPriceFiat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:textSize="16sp"
+                    android:textColor="@color/textColorSecondaryTransparent"
+                    tools:text="0.005063 USD"/>
 
             </LinearLayout>
 

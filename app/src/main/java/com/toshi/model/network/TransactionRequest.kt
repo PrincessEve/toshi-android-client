@@ -17,10 +17,14 @@
 
 package com.toshi.model.network
 
+import com.squareup.moshi.Json
+
 data class TransactionRequest(
         val value: String?,
         val from: String?,
         val to: String?,
+        @Json(name = "token_address")
+        val tokenAddress: String? = null,
         val data: String? = null,
         val gas: String? = null,
         val gasPrice: String? = null,

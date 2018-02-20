@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.toshi.BuildConfig
 import com.toshi.R
+import com.toshi.crypto.util.isPaymentAddressValid
 import com.toshi.extensions.isVisible
 import com.toshi.extensions.startActivityForResult
 import com.toshi.extensions.toast
@@ -95,7 +96,7 @@ class SendActivity : AppCompatActivity() {
 
     private fun handleSendPaymentClicked() {
         val paymentAddress = getRecipientAddress()
-        val isPaymentValid = viewModel.isPaymentAddressValid(paymentAddress)
+        val isPaymentValid = isPaymentAddressValid(paymentAddress)
         if (!isPaymentValid) {
             toast(R.string.invalid_payment_address)
             return

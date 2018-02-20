@@ -27,13 +27,17 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.toshi.R
 import com.toshi.crypto.util.TypeConverter
+import com.toshi.crypto.util.isPaymentAddressValid
 import com.toshi.extensions.startActivityForResult
 import com.toshi.extensions.toast
+import com.toshi.manager.model.PaymentTask
 import com.toshi.model.network.Balance
 import com.toshi.model.network.Token
 import com.toshi.util.EthUtil
+import com.toshi.util.PaymentType
 import com.toshi.util.QrCodeHandler
 import com.toshi.util.ScannerResultType
+import com.toshi.view.fragment.PaymentConfirmationFragment
 import com.toshi.viewModel.SendERC20TokenViewModel
 import com.toshi.viewModel.ViewModelFactory.SendERC20TokenViewModelFactory
 import kotlinx.android.synthetic.main.activity_send_erc20_token.*
@@ -73,6 +77,7 @@ class SendERC20TokenActivity : AppCompatActivity() {
         qrCodeBtn.setOnClickListener { startScanQrActivity() }
         paste.setOnClickListener { pasteToAddress() }
         max.setOnClickListener { setMaxAmount() }
+        continueBtn.setOnClickListener { validateAddressAndShowPaymentConfirmation() }
     }
 
     private fun startScanQrActivity() = startActivityForResult<ScannerActivity>(PAYMENT_SCAN_REQUEST_CODE) {
@@ -96,6 +101,31 @@ class SendERC20TokenActivity : AppCompatActivity() {
             toAmount.setText(tokenValue)
         } else toast(R.string.invalid_token)
     }
+
+    private fun validateAddressAndShowPaymentConfirmation() {
+        token?.let {
+            val address = toAddress.text.toString()
+            val transferValue = toAmount.text.toString()
+            if (isPaymentAddressValid(address)) showPaymentConfirmation(it, transferValue, address)
+            else toast(R.string.invalid_payment_address)
+        } ?: toast(R.string.invalid_token)
+    }
+
+    private fun showPaymentConfirmation(token: Token, value: String, toAddress: String) {
+        val dialog = PaymentConfirmationFragment.newInstanceERC20TokenPayment(
+                toAddress,
+                value,
+                token.contractAddress,
+                token.symbol,
+                token.decimals,
+                null,
+                PaymentType.TYPE_SEND
+        )
+        dialog.setOnPaymentConfirmationApprovedListener { onPaymentApproved(it) }
+        dialog.show(supportFragmentManager, PaymentConfirmationFragment.TAG)
+    }
+
+    private fun onPaymentApproved(paymentTask: PaymentTask) = viewModel.sendPayment(paymentTask)
 
     private fun updateUi(token: Token?) {
         if (token == null) {

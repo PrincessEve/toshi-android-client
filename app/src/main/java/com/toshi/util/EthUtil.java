@@ -60,6 +60,12 @@ public class EthUtil {
         return amountInEth.multiply(weiToEthRatio).toBigInteger();
     }
 
+    public static BigInteger ethToWei(final String amountInEth, final int decimals) {
+        return new BigDecimal(amountInEth)
+                .multiply(new BigDecimal("10")
+                        .pow(decimals)).toBigInteger();
+    }
+
     public static String encodeToHex(final String value) throws NumberFormatException, NullPointerException {
         return String.format("%s%s", "0x", new BigInteger(value).toString(16));
     }

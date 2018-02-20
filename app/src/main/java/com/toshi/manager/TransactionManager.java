@@ -18,6 +18,7 @@
 package com.toshi.manager;
 
 import com.toshi.crypto.HDWallet;
+import com.toshi.manager.model.ERC20TokenPaymentTask;
 import com.toshi.manager.model.ExternalPaymentTask;
 import com.toshi.manager.model.PaymentTask;
 import com.toshi.manager.model.ResendToshiPaymentTask;
@@ -145,6 +146,10 @@ public class TransactionManager {
         this.outgoingTransactionManager.addOutgoingExternalPaymentTask(paymentTask);
     }
 
+    public void sendERC20TokenPayment(final ERC20TokenPaymentTask paymentTask) {
+        this.outgoingTransactionManager.addOutgoingERC20PaymentTask(paymentTask);
+    }
+
     public final void updatePayment(final Payment payment) {
         this.updateTransactionManager.updatePayment(payment);
     }
@@ -167,7 +172,24 @@ public class TransactionManager {
                                                 final String toPaymentAddress,
                                                 final String ethAmount) {
         return this.paymentTaskBuilder
-                .buildToshiPaymentTask(fromPaymentAddress, toPaymentAddress, ethAmount);
+                .buildPaymentTask(fromPaymentAddress, toPaymentAddress, ethAmount);
+    }
+
+    public Single<ERC20TokenPaymentTask> buildPaymentTask(final String fromPaymentAddress,
+                                                          final String toPaymentAddress,
+                                                          final String ethAmount,
+                                                          final String tokenAddress,
+                                                          final String tokenSymbol,
+                                                          final int tokenDecimals) {
+        return this.paymentTaskBuilder
+                .buildERC20PaymentTask(
+                        fromPaymentAddress,
+                        toPaymentAddress,
+                        ethAmount,
+                        tokenAddress,
+                        tokenSymbol,
+                        tokenDecimals
+                );
     }
 
     public Single<W3PaymentTask> buildPaymentTask(final String callbackId, final UnsignedW3Transaction unsignedW3Transaction) {

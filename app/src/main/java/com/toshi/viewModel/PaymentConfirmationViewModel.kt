@@ -21,6 +21,7 @@ import android.arch.lifecycle.ViewModel
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Pair
+import com.toshi.manager.model.ERC20TokenPaymentTask
 import com.toshi.manager.model.PaymentTask
 import com.toshi.manager.model.W3PaymentTask
 import com.toshi.model.local.UnsignedW3Transaction
@@ -30,13 +31,15 @@ import com.toshi.util.LogUtil
 import com.toshi.util.SingleLiveEvent
 import com.toshi.view.BaseApplication
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.CALLBACK_ID
-import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.CONFIRMATION_TYPE
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.DAPP_FAVICON
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.DAPP_TITLE
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.DAPP_URL
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.ETH_AMOUNT
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.PAYMENT_ADDRESS
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.PAYMENT_TYPE
+import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.TOKEN_ADDRESS
+import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.TOKEN_DECIMALS
+import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.TOKEN_SYMBOL
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.TOSHI_ID
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.UNSIGNED_TRANSACTION
 import rx.Single
@@ -72,23 +75,36 @@ class PaymentConfirmationViewModel : ViewModel() {
         val toshiId = getToshiId()
         val encodedEthAmount = getEncodedEthAmount()
         val paymentAddress = getPaymentAddress()
+        val tokenAddress = getTokenAddress()
+        val tokenSymbol = getTokenSymbol()
+        val tokenDecimals = getTokenDecimals()
 
-        if (unsignedW3Transaction != null) getPaymentTaskWithUnsignedW3Transaction(unsignedW3Transaction)
-        else if (toshiId != null) getPaymentTaskWithToshiId(toshiId, encodedEthAmount)
-        else if (paymentAddress != null) getPaymentTaskWithPaymentAddress(paymentAddress, encodedEthAmount)
-        else LogUtil.exception(javaClass, "Unhandled payment unsignedW3Transaction, toshiId and paymentAddress is null")
+        val isUnsignedW3Transaction = unsignedW3Transaction != null
+        val isToshiPayment = toshiId != null
+        val isERC20Payment = tokenAddress != null && paymentAddress != null && tokenSymbol != null
+        val isExternalPayment = paymentAddress != null
+
+        when {
+            isUnsignedW3Transaction -> getPaymentTaskWithUnsignedW3Transaction(unsignedW3Transaction)
+            isToshiPayment -> getPaymentTaskWithToshiId(toshiId, encodedEthAmount)
+            isERC20Payment -> getPaymentTaskWithTokenAddress(tokenAddress, tokenSymbol, tokenDecimals, paymentAddress, encodedEthAmount)
+            isExternalPayment -> getPaymentTaskWithPaymentAddress(paymentAddress, encodedEthAmount)
+            else -> LogUtil.exception(javaClass, "Unhandled payment unsignedW3Transaction, toshiId and paymentAddress is null")
+        }
     }
 
     private fun getToshiId() = bundle.getString(TOSHI_ID)
     private fun getUnsignedW3Transaction() = bundle.getString(UNSIGNED_TRANSACTION)
     fun getPaymentAddress() = bundle.getString(PAYMENT_ADDRESS)
+    fun getTokenAddress() = bundle.getString(TOKEN_ADDRESS)
+    fun getTokenSymbol() = bundle.getString(TOKEN_SYMBOL)
+    fun getTokenDecimals() = bundle.getInt(TOKEN_DECIMALS)
     fun getPaymentType() = bundle.getInt(PAYMENT_TYPE)
     fun getEncodedEthAmount() = bundle.getString(ETH_AMOUNT)
     fun getCallbackId() = bundle.getString(CALLBACK_ID)
     fun getDappUrl() = bundle.getString(DAPP_URL)
     fun getDappTitle() = bundle.getString(DAPP_TITLE)
     fun getDappFavicon() = bundle.getParcelable<Bitmap>(DAPP_FAVICON)
-    fun getConfirmationType() = bundle.getInt(CONFIRMATION_TYPE)
 
     private fun getPaymentTaskWithToshiId(toshiId: String, ethAmount: String) {
         val sub = Single.zip(
@@ -106,6 +122,24 @@ class PaymentConfirmationViewModel : ViewModel() {
                 { paymentTaskError.value = Unit }
         )
 
+        this.subscriptions.add(sub)
+    }
+
+    private fun getPaymentTaskWithTokenAddress(tokenAddress: String,
+                                               tokenSymbol: String,
+                                               tokenDecimals: Int,
+                                               toPaymentAddress: String,
+                                               ethAmount: String) {
+        val sub = toshiManager.wallet
+                .flatMap { getPaymentTask(it.paymentAddress, toPaymentAddress, ethAmount, tokenAddress, tokenSymbol, tokenDecimals) }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe { isGasPriceLoading.value = true }
+                .doAfterTerminate { isGasPriceLoading.value = false }
+                .subscribe(
+                        { paymentTask.value = it },
+                        { paymentTaskError.value = Unit }
+                )
         this.subscriptions.add(sub)
     }
 
@@ -141,6 +175,23 @@ class PaymentConfirmationViewModel : ViewModel() {
 
     private fun getPaymentTask(fromPaymentAddress: String, toPaymentAddress: String, ethAmount: String): Single<PaymentTask> {
         return transactionManager.buildPaymentTask(fromPaymentAddress, toPaymentAddress, ethAmount)
+    }
+
+    private fun getPaymentTask(fromPaymentAddress: String,
+                               toPaymentAddress: String,
+                               ethAmount: String,
+                               tokenAddress: String,
+                               tokenSymbol: String,
+                               tokenDecimals: Int
+    ): Single<ERC20TokenPaymentTask> {
+        return transactionManager.buildPaymentTask(
+                fromPaymentAddress,
+                toPaymentAddress,
+                ethAmount,
+                tokenAddress,
+                tokenSymbol,
+                tokenDecimals
+        )
     }
 
     private fun getPaymentTaskWithUnsignedW3Transaction(unsignedW3Transaction: UnsignedW3Transaction): Single<W3PaymentTask> {

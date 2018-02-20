@@ -22,25 +22,18 @@ import com.squareup.moshi.Json;
 public class ERC20TokenPayment extends Payment {
     @Json(name = "token_address")
     private String tokenAddress;
-    private String tokenSymbol;
 
     public ERC20TokenPayment(final String value,
                              final String tokenAddress,
                              final String toAddress,
-                             final String fromAddress,
-                             final String tokenSymbol) {
+                             final String fromAddress) {
         this.value = value;
         this.toAddress = toAddress;
         this.fromAddress = fromAddress;
         this.tokenAddress = tokenAddress;
-        this.tokenSymbol = tokenSymbol;
     }
 
     public String getTokenAddress() {
         return this.tokenAddress;
-    }
-
-    public String getTokenSymbol() {
-        return this.tokenSymbol;
     }
 }

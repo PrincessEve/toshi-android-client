@@ -31,6 +31,7 @@ import android.view.ViewGroup
 import com.toshi.R
 import com.toshi.extensions.getColor
 import com.toshi.extensions.isVisible
+import com.toshi.manager.model.ERC20TokenPaymentTask
 import com.toshi.manager.model.ExternalPaymentTask
 import com.toshi.manager.model.PaymentTask
 import com.toshi.manager.model.ToshiPaymentTask
@@ -162,6 +163,7 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
             is W3PaymentTask -> renderDappInfo()
             is ToshiPaymentTask -> renderToshiUserInfo(paymentTask.user)
             is ExternalPaymentTask -> renderExternalInfo(paymentTask)
+            is ERC20TokenPaymentTask -> renderERC20TokenInfo(paymentTask)
             else -> LogUtil.exception(javaClass, "Unhandled payment $paymentTask")
         }
     }
@@ -184,8 +186,28 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
         externalAddress.text = paymentTask.payment.toAddress
     }
 
+    private fun renderERC20TokenInfo(paymentTask: PaymentTask) {
+        externalWrapper.isVisible(true)
+        externalAddress.text = paymentTask.payment.toAddress
+    }
+
     private fun renderPaymentInfo(paymentTask: PaymentTask) {
-        paymentInfoWrapper.isVisible(true)
+        when (paymentTask) {
+            is ERC20TokenPaymentTask -> renderERC20TokenPaymentInfo(paymentTask)
+            else -> renderETHPaymentInfo(paymentTask)
+        }
+    }
+
+    private fun renderERC20TokenPaymentInfo(paymentTask: ERC20TokenPaymentTask) {
+        ERC20PaymentInfoWrapper.isVisible(true)
+        ERC20Amount.text = "${paymentTask.tokenValue} ${paymentTask.tokenSymbol}"
+        val gasEthAmount = EthUtil.ethAmountToUserVisibleString(paymentTask.gasPrice.ethAmount)
+        ERC20GasPrice.text = getString(R.string.eth_amount, gasEthAmount)
+        ERC20GasPriceFiat.text = paymentTask.gasPrice.localAmount
+    }
+
+    private fun renderETHPaymentInfo(paymentTask: PaymentTask) {
+        ethPaymentInfoWrapper.isVisible(true)
         amount.text = paymentTask.paymentAmount.localAmount
         gasPrice.text = paymentTask.gasPrice.localAmount
         total.text = paymentTask.totalAmount.localAmount
@@ -194,7 +216,7 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
     }
 
     private fun handlePaymentTaskError() {
-        paymentInfoWrapper.isVisible(false)
+        ethPaymentInfoWrapper.isVisible(false)
         pay.disablePayButton()
         setStatusMessage(getString(R.string.gas_price_error), R.color.error_color)
     }
@@ -257,6 +279,9 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
         const val DAPP_TITLE = "dapp_title"
         const val DAPP_URL = "dapp_url"
         const val DAPP_FAVICON = "dapp_favicon"
+        const val TOKEN_ADDRESS = "token_address"
+        const val TOKEN_SYMBOL = "token_symbol"
+        const val TOKEN_DECIMALS = "token_decimals"
 
         fun newInstanceToshiPayment(toshiId: String,
                                     value: String,
@@ -276,6 +301,23 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
             val bundle = Bundle().apply {
                 putInt(CONFIRMATION_TYPE, PaymentConfirmationType.EXTERNAL)
                 putString(PAYMENT_ADDRESS, paymentAddress)
+            }
+            return newInstance(bundle, value, memo, paymentType)
+        }
+
+        fun newInstanceERC20TokenPayment(toAddress: String,
+                                         value: String,
+                                         tokenAddress: String,
+                                         tokenSymbol: String,
+                                         tokenDecimals: Int,
+                                         memo: String?,
+                                         @PaymentType.Type paymentType: Int): PaymentConfirmationFragment {
+            val bundle = Bundle().apply {
+                putInt(CONFIRMATION_TYPE, PaymentConfirmationType.EXTERNAL)
+                putString(PAYMENT_ADDRESS, toAddress)
+                putString(TOKEN_ADDRESS, tokenAddress)
+                putString(TOKEN_SYMBOL, tokenSymbol)
+                putInt(TOKEN_DECIMALS, tokenDecimals)
             }
             return newInstance(bundle, value, memo, paymentType)
         }

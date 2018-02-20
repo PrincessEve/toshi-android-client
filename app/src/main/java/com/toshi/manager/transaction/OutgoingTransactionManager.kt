@@ -17,6 +17,7 @@
 
 package com.toshi.manager.transaction
 
+import com.toshi.manager.model.ERC20TokenPaymentTask
 import com.toshi.manager.model.ExternalPaymentTask
 import com.toshi.manager.model.PaymentTask
 import com.toshi.manager.model.ResendToshiPaymentTask
@@ -68,6 +69,7 @@ class OutgoingTransactionManager(
             is ResendToshiPaymentTask -> resendPayment(paymentTask)
             is ToshiPaymentTask -> sendToshiPayment(paymentTask)
             is ExternalPaymentTask -> sendExternalPayment(paymentTask)
+            is ERC20TokenPaymentTask -> sendERC20Payment(paymentTask)
         }
     }
 
@@ -146,7 +148,7 @@ class OutgoingTransactionManager(
     }
 
     private fun sendExternalPayment(paymentTask: ExternalPaymentTask) {
-        getUpdatedExternalPayment(paymentTask)
+        getUpdatedPayment(paymentTask)
                 .flatMap { transactionSigner.signAndSendTransaction(paymentTask.unsignedTransaction) }
                 .subscribe(
                         {},
@@ -154,7 +156,16 @@ class OutgoingTransactionManager(
                 )
     }
 
-    private fun getUpdatedExternalPayment(paymentTask: ExternalPaymentTask): Single<ExternalPaymentTask> {
+    private fun sendERC20Payment(paymentTask: ERC20TokenPaymentTask) {
+        getUpdatedPayment(paymentTask)
+                .flatMap { transactionSigner.signAndSendTransaction(paymentTask.unsignedTransaction) }
+                .subscribe(
+                        {},
+                        { handleOutgoingExternalPaymentError(it, paymentTask) }
+                )
+    }
+
+    private fun getUpdatedPayment(paymentTask: PaymentTask): Single<PaymentTask> {
         val receiver = getReceiverFromTask(paymentTask)
         val sender = getSenderFromTask(paymentTask)
         return paymentTask.payment
@@ -164,7 +175,7 @@ class OutgoingTransactionManager(
                 .subscribeOn(Schedulers.io())
     }
 
-    private fun handleOutgoingExternalPaymentError(error: Throwable, paymentTask: ExternalPaymentTask) {
+    private fun handleOutgoingExternalPaymentError(error: Throwable, paymentTask: PaymentTask) {
         paymentErrorTask.handleOutgoingExternalPaymentError(error, paymentTask)
     }
 
@@ -197,12 +208,14 @@ class OutgoingTransactionManager(
     private fun getSenderFromTask(task: PaymentTask): User? {
         if (task is ToshiPaymentTask) return getLocalUser()
         if (task is ExternalPaymentTask) return getLocalUser()
+        if (task is ERC20TokenPaymentTask) return getLocalUser()
         throw IllegalStateException("Unknown payment task action.")
     }
 
     private fun getReceiverFromTask(task: PaymentTask): User? {
         if (task is ToshiPaymentTask) return task.user
         if (task is ExternalPaymentTask) return null
+        if (task is ERC20TokenPaymentTask) return null
         throw IllegalStateException("Unknown payment task action.")
     }
 
@@ -215,6 +228,10 @@ class OutgoingTransactionManager(
     }
 
     fun addOutgoingExternalPaymentTask(paymentTask: ExternalPaymentTask) {
+        addOutgoingPaymentTask(paymentTask)
+    }
+
+    fun addOutgoingERC20PaymentTask(paymentTask: ERC20TokenPaymentTask) {
         addOutgoingPaymentTask(paymentTask)
     }
 

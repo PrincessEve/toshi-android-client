@@ -26,7 +26,9 @@ data class ERC20TokenPaymentTask(
         override val gasPrice: EthAndFiat,
         override val totalAmount: EthAndFiat,
         override val payment: Payment,
-        override val unsignedTransaction: UnsignedTransaction
+        override val unsignedTransaction: UnsignedTransaction,
+        val tokenSymbol: String,
+        val tokenValue: String
 ) : PaymentTask(
         paymentAmount,
         gasPrice,
@@ -34,11 +36,13 @@ data class ERC20TokenPaymentTask(
         payment,
         unsignedTransaction
 ) {
-    constructor(paymentTask: PaymentTask) : this(
+    constructor(paymentTask: PaymentTask, tokenSymbol: String, tokenValue: String) : this(
             paymentTask.paymentAmount,
             paymentTask.gasPrice,
             paymentTask.totalAmount,
             paymentTask.payment,
-            paymentTask.unsignedTransaction
+            paymentTask.unsignedTransaction,
+            tokenSymbol,
+            tokenValue
     )
 }

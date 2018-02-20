@@ -46,3 +46,14 @@ fun toAddressWithChecksum(address: String): String {
 private fun ByteArray.toHex() = joinToString("") {
     it.toInt().and(0xff).toString(16).padStart(2, '0')
 }
+
+fun isPaymentAddressValid(paymentAddress: String?): Boolean {
+    val regex = Regex("^0x[a-fA-F0-9]{40}\$")
+    return paymentAddress?.let {
+        regex.matches(paymentAddress) && !hasInvalidChecksum(paymentAddress)
+    } ?: false
+}
+
+private fun hasInvalidChecksum(paymentAddress: String): Boolean {
+    return usesChecksum(paymentAddress) && !hasValidChecksum(paymentAddress)
+}

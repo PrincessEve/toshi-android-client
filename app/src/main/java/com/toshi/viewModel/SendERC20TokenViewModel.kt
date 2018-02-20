@@ -19,6 +19,8 @@ package com.toshi.viewModel
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
+import com.toshi.manager.model.ERC20TokenPaymentTask
+import com.toshi.manager.model.PaymentTask
 import com.toshi.model.network.Balance
 import com.toshi.util.LogUtil
 import com.toshi.view.BaseApplication
@@ -29,6 +31,7 @@ class SendERC20TokenViewModel(fetchEthBalance: Boolean) : ViewModel() {
 
     private val subscriptions by lazy { CompositeSubscription() }
     private val balanceManager by lazy { BaseApplication.get().balanceManager }
+    private val transactionManager by lazy { BaseApplication.get().transactionManager }
     val ethBalance by lazy { MutableLiveData<Balance>() }
 
     init {
@@ -47,5 +50,12 @@ class SendERC20TokenViewModel(fetchEthBalance: Boolean) : ViewModel() {
                 )
 
         subscriptions.add(sub)
+    }
+
+    fun sendPayment(paymentTask: PaymentTask) {
+        when (paymentTask) {
+            is ERC20TokenPaymentTask -> transactionManager.sendERC20TokenPayment(paymentTask)
+            else -> LogUtil.e(javaClass, "Invalid payment task in this context")
+        }
     }
 }
