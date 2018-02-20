@@ -28,7 +28,7 @@ data class ERCToken(
         val decimals: Int,
         @Json(name = "contract_address")
         val contractAddress: String,
-        val icon: String
+        val icon: String?
 ) : Token() {
 
     companion object {
