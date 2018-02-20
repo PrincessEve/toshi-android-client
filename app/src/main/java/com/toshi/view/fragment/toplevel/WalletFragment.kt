@@ -28,10 +28,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.toshi.R
-import com.toshi.extensions.startActivity
 import com.toshi.extensions.toast
-import com.toshi.view.activity.DepositActivity
 import com.toshi.view.adapter.WalletPagerAdapter
+import com.toshi.view.fragment.DialogFragment.ShareWalletAddressDialog
 import com.toshi.viewModel.WalletViewModel
 import kotlinx.android.synthetic.main.fragment_wallet.*
 
@@ -63,7 +62,12 @@ class WalletFragment : Fragment(), TopLevelFragment {
 
     private fun initClickListeners() {
         copy.setOnClickListener { handleCopyToClipboardClicked() }
-        walletWrapper.setOnClickListener { startActivity<DepositActivity>() }
+        walletWrapper.setOnClickListener { showShareWalletDialog() }
+    }
+
+    private fun showShareWalletDialog() {
+        val dialog = ShareWalletAddressDialog.newInstance()
+        dialog.show(activity.supportFragmentManager, ShareWalletAddressDialog.TAG)
     }
 
     private fun handleCopyToClipboardClicked() {

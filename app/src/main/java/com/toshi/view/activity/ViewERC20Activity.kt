@@ -93,7 +93,6 @@ class ViewERC20Activity : AppCompatActivity() {
 
     private fun initClickListeners(token: Token) {
         closeButton.setOnClickListener { finish() }
-        receive.setOnClickListener {}
         send.setOnClickListener { startSendActivity(token) }
         receive.setOnClickListener { showShareWalletDialog() }
     }
