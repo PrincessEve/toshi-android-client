@@ -25,6 +25,7 @@ import com.toshi.model.local.LocalStatusMessage;
 import com.toshi.model.local.UnsignedW3Transaction;
 import com.toshi.model.network.SofaError;
 import com.toshi.model.network.SofaErrors;
+import com.toshi.model.sofa.payment.Payment;
 
 import java.io.IOException;
 

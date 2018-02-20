@@ -28,7 +28,7 @@ import com.toshi.model.local.UnsignedW3Transaction
 import com.toshi.model.local.User
 import com.toshi.model.network.ExchangeRate
 import com.toshi.model.network.UnsignedTransaction
-import com.toshi.model.sofa.Payment
+import com.toshi.model.sofa.payment.Payment
 import com.toshi.util.EthUtil
 import com.toshi.view.BaseApplication
 import rx.Single

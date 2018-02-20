@@ -27,7 +27,7 @@ import android.widget.TextView;
 import com.toshi.R;
 import com.toshi.model.local.SendState;
 import com.toshi.model.network.SofaError;
-import com.toshi.model.sofa.Payment;
+import com.toshi.model.sofa.payment.Payment;
 import com.toshi.model.sofa.SofaMessage;
 import com.toshi.util.EthUtil;
 import com.toshi.util.ImageUtil;

@@ -19,7 +19,7 @@ package com.toshi.util.paymentTask
 
 import com.toshi.model.local.UnsignedW3Transaction
 import com.toshi.model.network.TransactionRequest
-import com.toshi.model.sofa.Payment
+import com.toshi.model.sofa.payment.Payment
 
 class TransactionRequestBuilder {
 

@@ -33,9 +33,9 @@ import com.toshi.model.local.UnsignedW3Transaction;
 import com.toshi.model.local.User;
 import com.toshi.model.network.SentTransaction;
 import com.toshi.model.network.SignedTransaction;
-import com.toshi.model.sofa.Payment;
 import com.toshi.model.sofa.PaymentRequest;
 import com.toshi.model.sofa.SofaMessage;
+import com.toshi.model.sofa.payment.Payment;
 import com.toshi.util.paymentTask.PaymentTaskBuilder;
 
 import rx.Single;

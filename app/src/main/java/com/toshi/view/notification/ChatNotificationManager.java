@@ -33,7 +33,7 @@ import com.toshi.model.local.ConversationStatus;
 import com.toshi.model.local.IncomingMessage;
 import com.toshi.model.local.Recipient;
 import com.toshi.model.sofa.Message;
-import com.toshi.model.sofa.Payment;
+import com.toshi.model.sofa.payment.Payment;
 import com.toshi.model.sofa.PaymentRequest;
 import com.toshi.model.sofa.SofaAdapters;
 import com.toshi.model.sofa.SofaMessage;

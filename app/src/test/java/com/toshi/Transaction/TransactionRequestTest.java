@@ -2,7 +2,7 @@ package com.toshi.Transaction;
 
 import com.toshi.model.local.UnsignedW3Transaction;
 import com.toshi.model.network.TransactionRequest;
-import com.toshi.model.sofa.Payment;
+import com.toshi.model.sofa.payment.Payment;
 import com.toshi.model.sofa.SofaAdapters;
 import com.toshi.util.paymentTask.TransactionRequestBuilder;
 

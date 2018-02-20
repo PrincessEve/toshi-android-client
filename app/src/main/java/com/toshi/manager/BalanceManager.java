@@ -34,7 +34,7 @@ import com.toshi.model.network.GcmDeregistration;
 import com.toshi.model.network.GcmRegistration;
 import com.toshi.model.network.ServerTime;
 import com.toshi.model.network.ERC20Tokens;
-import com.toshi.model.sofa.Payment;
+import com.toshi.model.sofa.payment.Payment;
 import com.toshi.util.CurrencyUtil;
 import com.toshi.util.FileNames;
 import com.toshi.util.GcmPrefsUtil;

@@ -18,18 +18,15 @@
 package com.toshi.manager.model
 
 import com.toshi.model.local.EthAndFiat
-import com.toshi.model.local.User
-import com.toshi.model.network.SentTransaction
 import com.toshi.model.network.UnsignedTransaction
 import com.toshi.model.sofa.payment.Payment
 
-open class ToshiPaymentTask(
+data class ERC20TokenPaymentTask(
         override val paymentAmount: EthAndFiat,
         override val gasPrice: EthAndFiat,
         override val totalAmount: EthAndFiat,
         override val payment: Payment,
-        override val unsignedTransaction: UnsignedTransaction,
-        open val user: User
+        override val unsignedTransaction: UnsignedTransaction
 ) : PaymentTask(
         paymentAmount,
         gasPrice,
@@ -37,39 +34,11 @@ open class ToshiPaymentTask(
         payment,
         unsignedTransaction
 ) {
-    constructor(paymentTask: PaymentTask, user: User) : this(
+    constructor(paymentTask: PaymentTask) : this(
             paymentTask.paymentAmount,
             paymentTask.gasPrice,
             paymentTask.totalAmount,
             paymentTask.payment,
-            paymentTask.unsignedTransaction,
-            user
-    )
-}
-
-data class SentToshiPaymentTask(
-        override val paymentAmount: EthAndFiat,
-        override val gasPrice: EthAndFiat,
-        override val totalAmount: EthAndFiat,
-        override val payment: Payment,
-        override val unsignedTransaction: UnsignedTransaction,
-        override val user: User,
-        val sentTransaction: SentTransaction
-) : ToshiPaymentTask(
-        paymentAmount,
-        gasPrice,
-        totalAmount,
-        payment,
-        unsignedTransaction,
-        user
-) {
-    constructor(toshiPaymentTask: ToshiPaymentTask, sentTransaction: SentTransaction) : this(
-            toshiPaymentTask.paymentAmount,
-            toshiPaymentTask.gasPrice,
-            toshiPaymentTask.totalAmount,
-            toshiPaymentTask.payment,
-            toshiPaymentTask.unsignedTransaction,
-            toshiPaymentTask.user,
-            sentTransaction
+            paymentTask.unsignedTransaction
     )
 }

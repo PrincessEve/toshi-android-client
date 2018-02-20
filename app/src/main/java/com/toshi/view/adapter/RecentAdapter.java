@@ -35,7 +35,7 @@ import com.toshi.model.local.ConversationRequestsItem;
 import com.toshi.model.local.LocalStatusMessage;
 import com.toshi.model.local.User;
 import com.toshi.model.sofa.Message;
-import com.toshi.model.sofa.Payment;
+import com.toshi.model.sofa.payment.Payment;
 import com.toshi.model.sofa.PaymentRequest;
 import com.toshi.model.sofa.SofaAdapters;
 import com.toshi.model.sofa.SofaMessage;

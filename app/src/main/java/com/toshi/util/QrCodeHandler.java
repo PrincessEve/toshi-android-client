@@ -33,7 +33,7 @@ import com.toshi.manager.model.PaymentTask;
 import com.toshi.manager.model.ToshiPaymentTask;
 import com.toshi.model.local.QrCodePayment;
 import com.toshi.model.local.User;
-import com.toshi.model.sofa.Payment;
+import com.toshi.model.sofa.payment.Payment;
 import com.toshi.view.BaseApplication;
 import com.toshi.view.activity.ChatActivity;
 import com.toshi.view.activity.ViewUserActivity;

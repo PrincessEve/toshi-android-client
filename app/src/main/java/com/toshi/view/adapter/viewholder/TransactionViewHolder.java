@@ -24,7 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.toshi.R;
-import com.toshi.model.sofa.Payment;
+import com.toshi.model.sofa.payment.Payment;
 import com.toshi.model.sofa.SofaType;
 import com.toshi.util.EthUtil;
 import com.toshi.util.LogUtil;

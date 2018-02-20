@@ -25,7 +25,7 @@ import com.toshi.manager.network.interceptor.AppInfoUserAgentInterceptor;
 import com.toshi.model.adapter.BigIntegerAdapter;
 import com.toshi.model.local.Network;
 import com.toshi.model.local.Networks;
-import com.toshi.model.sofa.Payment;
+import com.toshi.model.sofa.payment.Payment;
 import com.toshi.model.sofa.SofaAdapters;
 import com.toshi.model.sofa.SofaMessage;
 

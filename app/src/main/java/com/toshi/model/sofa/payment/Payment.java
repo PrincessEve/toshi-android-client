@@ -15,7 +15,7 @@
  *     along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.toshi.model.sofa;
+package com.toshi.model.sofa.payment;
 
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
@@ -26,6 +26,7 @@ import com.toshi.R;
 import com.toshi.crypto.HDWallet;
 import com.toshi.crypto.util.TypeConverter;
 import com.toshi.model.local.SendState;
+import com.toshi.model.sofa.SofaType;
 import com.toshi.util.EthUtil;
 import com.toshi.util.LocaleUtil;
 import com.toshi.view.BaseApplication;
@@ -38,11 +39,11 @@ import rx.schedulers.Schedulers;
 
 public class Payment {
 
-    private String value;
-    private String toAddress;
-    private String fromAddress;
-    private String txHash;
-    private String status;
+    /* package */ String value;
+    /* package */ String toAddress;
+    /* package */ String fromAddress;
+    /* package */ String txHash;
+    /* package */ String status;
 
     @IntDef({
             NOT_RELEVANT,

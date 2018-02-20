@@ -19,7 +19,7 @@ package com.toshi.manager.model
 
 import com.toshi.model.local.EthAndFiat
 import com.toshi.model.network.UnsignedTransaction
-import com.toshi.model.sofa.Payment
+import com.toshi.model.sofa.payment.Payment
 
 data class ExternalPaymentTask(
         override val paymentAmount: EthAndFiat,

@@ -21,7 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
 import com.toshi.R;
-import com.toshi.model.sofa.Payment;
+import com.toshi.model.sofa.payment.Payment;
 import com.toshi.model.sofa.PaymentRequest;
 import com.toshi.model.sofa.SofaAdapters;
 import com.toshi.model.sofa.SofaMessage;

@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import com.toshi.R
 import com.toshi.manager.model.PaymentTask
 import com.toshi.model.local.User
-import com.toshi.model.sofa.Payment
+import com.toshi.model.sofa.payment.Payment
 import com.toshi.model.sofa.PaymentRequest
 import com.toshi.view.fragment.PaymentConfirmationFragment
 

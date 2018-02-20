@@ -22,7 +22,7 @@ import com.toshi.manager.store.PendingTransactionStore
 import com.toshi.model.local.PendingTransaction
 import com.toshi.model.local.SendState
 import com.toshi.model.local.User
-import com.toshi.model.sofa.Payment
+import com.toshi.model.sofa.payment.Payment
 import com.toshi.model.sofa.SofaAdapters
 import com.toshi.model.sofa.SofaMessage
 import com.toshi.util.LogUtil

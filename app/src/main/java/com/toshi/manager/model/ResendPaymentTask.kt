@@ -20,7 +20,7 @@ package com.toshi.manager.model
 import com.toshi.model.local.EthAndFiat
 import com.toshi.model.local.User
 import com.toshi.model.network.UnsignedTransaction
-import com.toshi.model.sofa.Payment
+import com.toshi.model.sofa.payment.Payment
 import com.toshi.model.sofa.SofaMessage
 
 data class ResendToshiPaymentTask(
