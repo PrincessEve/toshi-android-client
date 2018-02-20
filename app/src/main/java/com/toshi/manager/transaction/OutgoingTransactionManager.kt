@@ -50,6 +50,7 @@ class OutgoingTransactionManager(
     private val subscriptions by lazy { CompositeSubscription() }
     private var outgoingPaymentSub: Subscription? = null
     private val paymentErrorTask by lazy { PaymentErrorTask() }
+    val successfulOutgoingPaymentSubject by lazy { PublishSubject.create<PaymentTask>() }
 
     fun attachNewOutgoingPaymentSubscriber() {
         // Explicitly clear first to avoid double subscription
@@ -94,6 +95,7 @@ class OutgoingTransactionManager(
     private fun handleOutgoingToshiPayment(paymentTask: ToshiPaymentTask, storedSofaMessage: SofaMessage) {
         transactionSigner.signAndSendTransaction(paymentTask.unsignedTransaction)
                 .map { SentToshiPaymentTask(paymentTask, it) }
+                .doOnSuccess { broadcastSuccessfulPayment(paymentTask) }
                 .subscribeOn(Schedulers.io())
                 .subscribe(
                         { handleOutgoingToshiPaymentSuccess(it, storedSofaMessage) },
@@ -151,7 +153,7 @@ class OutgoingTransactionManager(
         getUpdatedPayment(paymentTask)
                 .flatMap { transactionSigner.signAndSendTransaction(paymentTask.unsignedTransaction) }
                 .subscribe(
-                        {},
+                        { broadcastSuccessfulPayment(paymentTask) },
                         { handleOutgoingExternalPaymentError(it, paymentTask) }
                 )
     }
@@ -160,7 +162,7 @@ class OutgoingTransactionManager(
         getUpdatedPayment(paymentTask)
                 .flatMap { transactionSigner.signAndSendTransaction(paymentTask.unsignedTransaction) }
                 .subscribe(
-                        {},
+                        { broadcastSuccessfulPayment(paymentTask) },
                         { handleOutgoingExternalPaymentError(it, paymentTask) }
                 )
     }
@@ -238,5 +240,6 @@ class OutgoingTransactionManager(
     private fun getLocalUser() = userManager.getCurrentUser().toBlocking().value()
     private fun clearSubscription() = outgoingPaymentSub?.unsubscribe()
     private fun addOutgoingPaymentTask(paymentTask: PaymentTask) = newOutgoingPaymentQueue.onNext(paymentTask)
+    private fun broadcastSuccessfulPayment(paymentTask: PaymentTask) = successfulOutgoingPaymentSubject.onNext(paymentTask)
     fun clearSubscriptions() = subscriptions.clear()
 }

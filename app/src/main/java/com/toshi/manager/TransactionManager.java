@@ -39,7 +39,9 @@ import com.toshi.model.sofa.SofaMessage;
 import com.toshi.model.sofa.payment.Payment;
 import com.toshi.util.paymentTask.PaymentTaskBuilder;
 
+import rx.Observable;
 import rx.Single;
+import rx.schedulers.Schedulers;
 import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 
@@ -148,6 +150,12 @@ public class TransactionManager {
 
     public void sendERC20TokenPayment(final ERC20TokenPaymentTask paymentTask) {
         this.outgoingTransactionManager.addOutgoingERC20PaymentTask(paymentTask);
+    }
+
+    public Observable<PaymentTask> getSuccessfulOutgoingPaymentsObservable() {
+        return this.outgoingTransactionManager.getSuccessfulOutgoingPaymentSubject()
+                .asObservable()
+                .subscribeOn(Schedulers.io());
     }
 
     public final void updatePayment(final Payment payment) {
