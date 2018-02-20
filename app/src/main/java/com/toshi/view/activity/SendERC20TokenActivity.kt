@@ -121,6 +121,7 @@ class SendERC20TokenActivity : AppCompatActivity() {
                 PaymentType.TYPE_SEND
         )
         dialog.show(supportFragmentManager, PaymentConfirmationFragment.TAG)
+        dialog.setOnPaymentConfirmationFinishedListener { finish() }
     }
 
     private fun updateUi() {

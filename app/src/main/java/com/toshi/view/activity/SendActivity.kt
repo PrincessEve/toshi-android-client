@@ -121,6 +121,7 @@ class SendActivity : AppCompatActivity() {
                 PaymentType.TYPE_SEND
         )
         dialog.show(supportFragmentManager, PaymentConfirmationFragment.TAG)
+        dialog.setOnPaymentConfirmationFinishedListener { finish() }
     }
 
     private fun getRecipientAddress(): String {

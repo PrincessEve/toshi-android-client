@@ -140,6 +140,7 @@ class SendETHActivity : AppCompatActivity() {
                 currencyMode = viewModel.currencyMode
         )
         dialog.show(supportFragmentManager, PaymentConfirmationFragment.TAG)
+        dialog.setOnPaymentConfirmationFinishedListener { finish() }
     }
 
     private fun updateUi() {

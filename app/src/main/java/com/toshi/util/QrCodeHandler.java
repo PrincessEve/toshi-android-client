@@ -126,7 +126,8 @@ public class QrCodeHandler {
                                     PaymentType.TYPE_REQUEST
                             );
             dialog.show(this.activity.getSupportFragmentManager(), PaymentConfirmationFragment.TAG);
-            dialog.setOnPaymentConfirmationCanceledListener(__ -> onPaymentCanceled());
+            dialog.setOnPaymentConfirmationCanceledListener(__ -> finishActivity())
+                    .setOnPaymentConfirmationFinishedListener(this::finishActivity);
         } catch (InvalidQrCodePayment e) {
             handleInvalidQrCode();
         }
@@ -146,14 +147,15 @@ public class QrCodeHandler {
                                     CurrencyMode.FIAT
                             );
             dialog.show(this.activity.getSupportFragmentManager(), PaymentConfirmationFragment.TAG);
-            dialog.setOnPaymentConfirmationCanceledListener(__ -> onPaymentCanceled());
+            dialog.setOnPaymentConfirmationCanceledListener(__ -> finishActivity())
+                    .setOnPaymentConfirmationFinishedListener(this::finishActivity);
         } catch (InvalidQrCodePayment e) {
             handleInvalidQrCode();
         }
     }
 
-    private Unit onPaymentCanceled() {
-        this.activity.finish();
+    private Unit finishActivity() {
+        if (this.activity != null) this.activity.finish();
         return null;
     }
 
