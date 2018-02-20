@@ -32,6 +32,7 @@ public class EthUtil {
     private static final int NUM_DECIMAL_PLACES = 5;
     private static final String USER_VISIBLE_STRING_FORMATTING = "%.5f";
     private static final BigDecimal weiToEthRatio = new BigDecimal("1000000000000000000");
+    public static final String DECIMAL_FORMAT = "0.00000";
 
     public static String hexAmountToUserVisibleString(final String hexEncodedWei) {
         final BigInteger wei = TypeConverter.StringHexToBigInteger(hexEncodedWei);

@@ -27,6 +27,7 @@ import com.toshi.extensions.toast
 import com.toshi.model.network.token.ERCToken
 import com.toshi.model.network.token.EtherToken
 import com.toshi.model.network.token.Token
+import com.toshi.util.EthUtil
 import com.toshi.util.ImageUtil
 import com.toshi.view.fragment.DialogFragment.ShareWalletAddressDialog
 import kotlinx.android.synthetic.main.activity_view_erc20.*
@@ -86,7 +87,7 @@ class ViewERC20Activity : AppCompatActivity() {
     private fun renderERCTokenUi(ERCToken: ERCToken) {
         toolbarTitle.text = ERCToken.name
         ImageUtil.load(ERCToken.icon, avatar)
-        val tokenAmount = TypeConverter.formatHexString(ERCToken.value, ERCToken.decimals, "0.000000")
+        val tokenAmount = TypeConverter.formatHexString(ERCToken.value, ERCToken.decimals, EthUtil.DECIMAL_FORMAT)
         amount.text = "$tokenAmount ${ERCToken.symbol}"
     }
 

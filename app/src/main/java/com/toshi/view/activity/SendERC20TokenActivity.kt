@@ -32,6 +32,7 @@ import com.toshi.extensions.startActivityForResult
 import com.toshi.extensions.toast
 import com.toshi.manager.model.PaymentTask
 import com.toshi.model.network.token.ERCToken
+import com.toshi.util.EthUtil
 import com.toshi.util.PaymentType
 import com.toshi.util.QrCodeHandler
 import com.toshi.util.ScannerResultType
@@ -140,7 +141,7 @@ class SendERC20TokenActivity : AppCompatActivity() {
     }
 
     private fun renderERC20TokenBalance(ERCToken: ERCToken) {
-        val tokenValue = TypeConverter.formatHexString(ERCToken.value, ERCToken.decimals, "0.000000")
+        val tokenValue = TypeConverter.formatHexString(ERCToken.value, ERCToken.decimals, EthUtil.DECIMAL_FORMAT)
         balance.text = getString(R.string.erc20_balance, ERCToken.symbol, tokenValue, ERCToken.symbol)
     }
 
@@ -191,7 +192,7 @@ class SendERC20TokenActivity : AppCompatActivity() {
 
     private fun showAmountError() {
         val token = viewModel.token
-        val balanceAmount = TypeConverter.formatHexString(token.value, token.decimals, "0.000000")
+        val balanceAmount = TypeConverter.formatHexString(token.value, token.decimals, EthUtil.DECIMAL_FORMAT)
         amountError.isVisible(true)
         amountError.text = getString(R.string.insufficient_balance, balanceAmount)
     }

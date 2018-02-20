@@ -63,7 +63,7 @@ class PaymentTaskBuilder {
                               tokenSymbol: String,
                               tokenDecimals: Int): Single<ERC20TokenPaymentTask> {
         val hexEncodedValue = TypeConverter.toJsonHex(EthUtil.ethToWei(value, tokenDecimals))
-        val decimalEncodedValue = TypeConverter.formatHexString(hexEncodedValue, tokenDecimals, "0.000000")
+        val decimalEncodedValue = TypeConverter.formatHexString(hexEncodedValue, tokenDecimals, EthUtil.DECIMAL_FORMAT)
         val erc20TokenPayment = ERC20TokenPayment(
                 hexEncodedValue,
                 tokenAddress,

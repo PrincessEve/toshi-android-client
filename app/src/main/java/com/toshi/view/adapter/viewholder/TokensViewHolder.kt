@@ -26,6 +26,7 @@ import com.toshi.extensions.isVisible
 import com.toshi.model.network.token.ERCToken
 import com.toshi.model.network.token.EtherToken
 import com.toshi.model.network.token.Token
+import com.toshi.util.EthUtil
 import com.toshi.util.ImageUtil
 import kotlinx.android.synthetic.main.list_item__token.view.*
 
@@ -71,7 +72,7 @@ class TokensViewHolder(private val tokenType: TokenType, itemView: View?) : Recy
         itemView.erc721Wrapper.visibility = View.GONE
         itemView.erc20Name.text = ERCToken.name
         itemView.erc20Abbreviation.text = ERCToken.symbol
-        itemView.value.text = TypeConverter.formatHexString(ERCToken.value, ERCToken.decimals, "0.000000")
+        itemView.value.text = TypeConverter.formatHexString(ERCToken.value, ERCToken.decimals, EthUtil.DECIMAL_FORMAT)
         itemView.fiatValue.isVisible(false)
         itemView.value.setTextColor(itemView.getColorById(R.color.textColorPrimary))
         ImageUtil.load(ERCToken.icon, itemView.avatar)
