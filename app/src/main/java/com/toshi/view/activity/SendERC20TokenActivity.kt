@@ -30,7 +30,6 @@ import com.toshi.crypto.util.isPaymentAddressValid
 import com.toshi.extensions.isVisible
 import com.toshi.extensions.startActivityForResult
 import com.toshi.extensions.toast
-import com.toshi.manager.model.PaymentTask
 import com.toshi.model.network.token.ERCToken
 import com.toshi.util.EthUtil
 import com.toshi.util.PaymentType
@@ -121,11 +120,8 @@ class SendERC20TokenActivity : AppCompatActivity() {
                 null,
                 PaymentType.TYPE_SEND
         )
-        dialog.setOnPaymentConfirmationApprovedListener { onPaymentApproved(it) }
         dialog.show(supportFragmentManager, PaymentConfirmationFragment.TAG)
     }
-
-    private fun onPaymentApproved(paymentTask: PaymentTask) = viewModel.sendPayment(paymentTask)
 
     private fun updateUi() {
         val token = viewModel.token

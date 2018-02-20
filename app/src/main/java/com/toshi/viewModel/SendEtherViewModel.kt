@@ -23,9 +23,6 @@ import com.toshi.R
 import com.toshi.crypto.util.hasValidChecksum
 import com.toshi.crypto.util.usesChecksum
 import com.toshi.extensions.createSafeBigDecimal
-import com.toshi.manager.model.ExternalPaymentTask
-import com.toshi.manager.model.PaymentTask
-import com.toshi.manager.model.ToshiPaymentTask
 import com.toshi.model.local.CurrencyMode
 import com.toshi.model.network.Balance
 import com.toshi.model.network.ExchangeRate
@@ -44,7 +41,6 @@ class SendEtherViewModel : ViewModel() {
 
     private val subscriptions by lazy { CompositeSubscription() }
     private val balanceManager by lazy { BaseApplication.get().balanceManager }
-    private val transactionManager by lazy { BaseApplication.get().transactionManager }
     private var exchangeRate: ExchangeRate? = null
     var currencyMode = CurrencyMode.ETH
     val ethBalance by lazy { MutableLiveData<Balance>() }
@@ -90,14 +86,6 @@ class SendEtherViewModel : ViewModel() {
 
     private fun hasInvalidChecksum(paymentAddress: String): Boolean {
         return usesChecksum(paymentAddress) && !hasValidChecksum(paymentAddress)
-    }
-
-    fun sendPayment(paymentTask: PaymentTask) {
-        when (paymentTask) {
-            is ToshiPaymentTask -> transactionManager.sendPayment(paymentTask)
-            is ExternalPaymentTask -> transactionManager.sendExternalPayment(paymentTask)
-            else -> LogUtil.e(javaClass, "Invalid payment task in this context")
-        }
     }
 
     fun hasEnoughBalance(inputAmount: String): Boolean {

@@ -29,7 +29,6 @@ import com.toshi.R
 import com.toshi.extensions.isVisible
 import com.toshi.extensions.startActivityForResult
 import com.toshi.extensions.toast
-import com.toshi.manager.model.PaymentTask
 import com.toshi.model.network.Balance
 import com.toshi.model.network.token.EtherToken
 import com.toshi.util.DialogUtil
@@ -140,11 +139,8 @@ class SendETHActivity : AppCompatActivity() {
                 sendMaxAmount = viewModel.sendMaxAmount,
                 currencyMode = viewModel.currencyMode
         )
-        dialog.setOnPaymentConfirmationApprovedListener { onPaymentApproved(it) }
         dialog.show(supportFragmentManager, PaymentConfirmationFragment.TAG)
     }
-
-    private fun onPaymentApproved(paymentTask: PaymentTask) = viewModel.sendPayment(paymentTask)
 
     private fun updateUi() {
         renderToolbar()

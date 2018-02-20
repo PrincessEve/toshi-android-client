@@ -21,23 +21,10 @@ import android.arch.lifecycle.ViewModel
 import com.toshi.crypto.util.TypeConverter
 import com.toshi.extensions.createSafeBigDecimal
 import com.toshi.extensions.isValidDecimal
-import com.toshi.manager.model.ERC20TokenPaymentTask
-import com.toshi.manager.model.PaymentTask
 import com.toshi.model.network.token.ERCToken
-import com.toshi.util.LogUtil
-import com.toshi.view.BaseApplication
 import java.math.BigDecimal
 
 class SendERC20TokenViewModel(val token: ERCToken) : ViewModel() {
-
-    private val transactionManager by lazy { BaseApplication.get().transactionManager }
-
-    fun sendPayment(paymentTask: PaymentTask) {
-        when (paymentTask) {
-            is ERC20TokenPaymentTask -> transactionManager.sendERC20TokenPayment(paymentTask)
-            else -> LogUtil.e(javaClass, "Invalid payment task in this context")
-        }
-    }
 
     fun isAmountValid(inputAmount: String) = inputAmount.isNotEmpty() && isValidDecimal(inputAmount)
 

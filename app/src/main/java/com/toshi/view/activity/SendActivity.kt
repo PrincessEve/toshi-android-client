@@ -29,7 +29,6 @@ import com.toshi.crypto.util.isPaymentAddressValid
 import com.toshi.extensions.isVisible
 import com.toshi.extensions.startActivityForResult
 import com.toshi.extensions.toast
-import com.toshi.manager.model.PaymentTask
 import com.toshi.model.local.Networks
 import com.toshi.util.BuildTypes
 import com.toshi.util.PaymentType
@@ -121,13 +120,7 @@ class SendActivity : AppCompatActivity() {
                 null,
                 PaymentType.TYPE_SEND
         )
-        dialog.setOnPaymentConfirmationApprovedListener { onPaymentApproved(it) }
         dialog.show(supportFragmentManager, PaymentConfirmationFragment.TAG)
-    }
-
-    private fun onPaymentApproved(paymentTask: PaymentTask) {
-        viewModel.sendPayment(paymentTask)
-        finish()
     }
 
     private fun getRecipientAddress(): String {

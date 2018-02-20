@@ -47,13 +47,13 @@ import com.toshi.presenter.chat.ConfirmPaymentInfo
 import com.toshi.presenter.chat.ResendPaymentInfo
 import com.toshi.util.BuildTypes
 import com.toshi.util.ChatNavigation
+import com.toshi.util.ChatPaymentHandler
 import com.toshi.util.FileUtil
 import com.toshi.util.KeyboardUtil
 import com.toshi.util.LogUtil
 import com.toshi.util.OnSingleClickListener
 import com.toshi.util.PaymentType
 import com.toshi.util.PermissionUtil
-import com.toshi.util.ResendHandler
 import com.toshi.util.SoundManager
 import com.toshi.util.keyboard.KeyboardListener
 import com.toshi.view.BaseApplication
@@ -84,7 +84,7 @@ class ChatActivity : AppCompatActivity() {
     private var lastVisibleMessagePosition: Int = 0
 
     private val chatNavigation by lazy { ChatNavigation() }
-    private val resendHandler by lazy { ResendHandler(this) }
+    private val chatPaymentHandler by lazy { ChatPaymentHandler(this) }
 
     private lateinit var viewModel: ChatViewModel
     private lateinit var messageAdapter: MessageAdapter
@@ -161,13 +161,13 @@ class ChatActivity : AppCompatActivity() {
                 .addOnImageClickListener { chatNavigation.startImageActivity(this, it) }
                 .addOnFileClickListener { chatNavigation.startAttachmentPicker(this, it) }
                 .addOnResendListener {
-                    resendHandler.showResendDialog(
+                    chatPaymentHandler.showResendDialog(
                             { viewModel.resendMessage(it) },
                             { viewModel.deleteMessage(it) }
                     )
                 }
                 .addOnResendPaymentListener { sofaMessage ->
-                    resendHandler.showResendDialog(
+                    chatPaymentHandler.showResendDialog(
                             { viewModel.showResendPaymentConfirmationDialog(sofaMessage) },
                             { viewModel.deleteMessage(sofaMessage) }
                     )
@@ -306,9 +306,7 @@ class ChatActivity : AppCompatActivity() {
     private fun showPaymentConfirmationDialog(confirmPaymentInfo: ConfirmPaymentInfo) {
         val receiver = confirmPaymentInfo.receiver
         val amount = confirmPaymentInfo.amount
-        resendHandler.showPaymentConfirmationDialog(receiver, amount) { paymentTask ->
-            viewModel.sendPayment(paymentTask)
-        }
+        chatPaymentHandler.showPaymentConfirmationDialog(receiver, amount)
     }
 
     private fun showResendPaymentConfirmationDialog(resendPaymentInfo: ResendPaymentInfo) {
@@ -316,9 +314,7 @@ class ChatActivity : AppCompatActivity() {
             val sofaMessage = resendPaymentInfo.sofaMessage
             val receiver = resendPaymentInfo.receiver
             val payment = SofaAdapters.get().paymentFrom(sofaMessage.payload)
-            resendHandler.showResendPaymentConfirmationDialog(receiver, payment) { paymentTask ->
-                viewModel.resendPayment(sofaMessage, paymentTask)
-            }
+            chatPaymentHandler.showResendPaymentConfirmationDialog(receiver, payment)
         } catch (e: IOException) {
             LogUtil.e(javaClass, "Error while resending payment $e")
         }
@@ -327,7 +323,7 @@ class ChatActivity : AppCompatActivity() {
     private fun showPaymentRequestConfirmationDialog(existingMessage: SofaMessage) {
         try {
             val paymentRequest = SofaAdapters.get().txRequestFrom(existingMessage.payload)
-            resendHandler.showPaymentRequestConfirmationDialog(existingMessage.sender, paymentRequest) { paymentTask ->
+            chatPaymentHandler.showPaymentRequestConfirmationDialog(existingMessage.sender, paymentRequest) { paymentTask ->
                 viewModel.updatePaymentRequestState(existingMessage, PaymentRequest.ACCEPTED)
                 viewModel.sendPayment(paymentTask)
             }
