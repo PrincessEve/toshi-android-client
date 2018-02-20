@@ -292,7 +292,7 @@ class PaymentConfirmationViewModel : ViewModel() {
         when (paymentTask) {
             is ToshiPaymentTask -> { transactionManager.sendPayment(paymentTask); isLoading. value = true }
             is ExternalPaymentTask -> { transactionManager.sendExternalPayment(paymentTask); isLoading. value = true }
-            is ERC20TokenPaymentTask -> { transactionManager.sendERC20TokenlPayment(paymentTask); isLoading. value = true }
+            is ERC20TokenPaymentTask -> { transactionManager.sendERC20TokenPayment(paymentTask); isLoading. value = true }
             else -> LogUtil.e(javaClass, "Invalid payment task in this context")
         }
     }
