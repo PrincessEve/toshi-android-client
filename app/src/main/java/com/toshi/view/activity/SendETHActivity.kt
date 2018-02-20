@@ -26,6 +26,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.toshi.R
+import com.toshi.crypto.util.isPaymentAddressValid
 import com.toshi.extensions.isVisible
 import com.toshi.extensions.startActivityForResult
 import com.toshi.extensions.toast
@@ -219,7 +220,7 @@ class SendETHActivity : AppCompatActivity() {
     private fun validateAddress(addressInput: String) {
         addressError.isVisible(false)
         if (addressInput.isEmpty()) return
-        val isAddressValid = viewModel.isPaymentAddressValid(addressInput)
+        val isAddressValid = isPaymentAddressValid(addressInput)
         if (!isAddressValid) showAddressError()
     }
 
@@ -227,7 +228,7 @@ class SendETHActivity : AppCompatActivity() {
         val amount = toAmount.text.toString()
         val address = toAddress.text.toString()
         val isAmountValid = viewModel.isAmountValid(amount) && viewModel.hasEnoughBalance(amount)
-        val isAddressValid = viewModel.isPaymentAddressValid(address)
+        val isAddressValid = isPaymentAddressValid(address)
         if (isAmountValid && isAddressValid) enableContinueButton()
         else disableContinueButton()
     }
