@@ -17,13 +17,16 @@
 
 package com.toshi.viewModel
 
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Pair
 import com.toshi.R
 import com.toshi.manager.model.ERC20TokenPaymentTask
+import com.toshi.manager.model.ExternalPaymentTask
 import com.toshi.manager.model.PaymentTask
+import com.toshi.manager.model.ToshiPaymentTask
 import com.toshi.manager.model.W3PaymentTask
 import com.toshi.model.local.CurrencyMode
 import com.toshi.model.local.UnsignedW3Transaction
@@ -47,10 +50,12 @@ import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.TOKEN_DECIM
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.TOKEN_SYMBOL
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.TOSHI_ID
 import com.toshi.view.fragment.PaymentConfirmationFragment.Companion.UNSIGNED_TRANSACTION
+import rx.Completable
 import rx.Single
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import java.util.concurrent.TimeUnit
 
 class PaymentConfirmationViewModel : ViewModel() {
 
@@ -58,21 +63,57 @@ class PaymentConfirmationViewModel : ViewModel() {
     private val recipientManager by lazy { BaseApplication.get().recipientManager }
     private val transactionManager by lazy { BaseApplication.get().transactionManager }
     private val balanceManager by lazy { BaseApplication.get().balanceManager }
-
     private val subscriptions by lazy { CompositeSubscription() }
 
-    val isGasPriceLoading by lazy { SingleLiveEvent<Boolean>() }
+    val isLoading by lazy { SingleLiveEvent<Boolean>() }
     val paymentTask by lazy { SingleLiveEvent<PaymentTask>() }
     val paymentTaskError by lazy { SingleLiveEvent<Unit>() }
-    val balance by lazy { SingleLiveEvent<Balance>() }
+    val balance by lazy { MutableLiveData<Balance>() }
+    val paymentSuccess by lazy { SingleLiveEvent<PaymentTask>() }
+    val paymentError by lazy { SingleLiveEvent<Int>() }
     val error by lazy { SingleLiveEvent<Int>() }
+    val finish by lazy { SingleLiveEvent<Unit>() }
 
     lateinit var bundle: Bundle
+
+    init {
+        listenForSuccessfulPayment()
+        getBalance()
+    }
+
+    private fun listenForSuccessfulPayment() {
+        val sub = transactionManager.getSuccessfulOutgoingPaymentsObservable()
+                .filter { it != null }
+                .filter { it == paymentTask.value }
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext { isLoading.value = false }
+                .subscribe(
+                        { paymentSuccess.value = it },
+                        { paymentError.value = R.string.payment_failed }
+                )
+
+        subscriptions.add(sub)
+    }
+
+    private fun getBalance() {
+        balanceManager.refreshBalance() // Initiate a balance request to make sure the balance is updated
+        val sub = balanceManager
+                .balanceObservable
+                .filter { it != null }
+                .flatMap { it.getBalanceWithLocalBalance().toObservable() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { balance.value = it },
+                        { LogUtil.e(javaClass, "Error while fetching balance $it") }
+                )
+
+        subscriptions.add(sub)
+    }
 
     fun init(bundle: Bundle) {
         this.bundle = bundle
         getPaymentTask()
-        getBalance()
     }
 
     private fun getPaymentTask() {
@@ -125,8 +166,8 @@ class PaymentConfirmationViewModel : ViewModel() {
         .flatMap { getPaymentTask(it.first.paymentAddress, it.second.paymentAddress, ethAmount, isSendingMaxAmount()) }
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnSubscribe { isGasPriceLoading.value = true }
-        .doAfterTerminate { isGasPriceLoading.value = false }
+        .doOnSubscribe { isLoading.value = true }
+        .doAfterTerminate { isLoading.value = false }
         .subscribe(
                 { paymentTask.value = it },
                 { paymentTaskError.value = Unit }
@@ -144,8 +185,8 @@ class PaymentConfirmationViewModel : ViewModel() {
                 .flatMap { getPaymentTask(it.paymentAddress, toPaymentAddress, ethAmount, tokenAddress, tokenSymbol, tokenDecimals) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { isGasPriceLoading.value = true }
-                .doAfterTerminate { isGasPriceLoading.value = false }
+                .doOnSubscribe { isLoading.value = true }
+                .doAfterTerminate { isLoading.value = false }
                 .subscribe(
                         { paymentTask.value = it },
                         { paymentTaskError.value = Unit }
@@ -158,8 +199,8 @@ class PaymentConfirmationViewModel : ViewModel() {
                 .flatMap { getPaymentTask(it.paymentAddress, toPaymentAddress, ethAmount, isSendingMaxAmount()) }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { isGasPriceLoading.value = true }
-                .doAfterTerminate { isGasPriceLoading.value = false }
+                .doOnSubscribe { isLoading.value = true }
+                .doAfterTerminate { isLoading.value = false }
                 .subscribe(
                         { paymentTask.value = it },
                         { paymentTaskError.value = Unit }
@@ -173,8 +214,8 @@ class PaymentConfirmationViewModel : ViewModel() {
         val sub = getPaymentTaskWithUnsignedW3Transaction(transaction)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { isGasPriceLoading.value = true }
-                .doAfterTerminate { isGasPriceLoading.value = false }
+                .doOnSubscribe { isLoading.value = true }
+                .doAfterTerminate { isLoading.value = false }
                 .subscribe(
                         { paymentTask.value = it },
                         { paymentTaskError.value = Unit }
@@ -217,22 +258,6 @@ class PaymentConfirmationViewModel : ViewModel() {
         return transactionManager.buildPaymentTask(callbackId, unsignedW3Transaction)
     }
 
-    private fun getBalance() {
-        balanceManager.refreshBalance() // Initiate a balance request to make sure the balance is updated
-        val sub = balanceManager
-                .balanceObservable
-                .filter { it != null }
-                .flatMap { it.getBalanceWithLocalBalance().toObservable() }
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                        { balance.value = it },
-                        { LogUtil.e(javaClass, "Error while fetching balance $it") }
-                )
-
-        subscriptions.add(sub)
-    }
-
     fun getPaymentAmount(paymentTask: PaymentTask, currencyMode: CurrencyMode): String {
         return when (currencyMode) {
             CurrencyMode.ETH -> {
@@ -261,6 +286,28 @@ class PaymentConfirmationViewModel : ViewModel() {
             }
             CurrencyMode.FIAT -> paymentTask.totalAmount.localAmount
         }
+    }
+
+    fun sendPayment(paymentTask: PaymentTask) {
+        when (paymentTask) {
+            is ToshiPaymentTask -> { transactionManager.sendPayment(paymentTask); isLoading. value = true }
+            is ExternalPaymentTask -> { transactionManager.sendExternalPayment(paymentTask); isLoading. value = true }
+            is ERC20TokenPaymentTask -> { transactionManager.sendERC20TokenlPayment(paymentTask); isLoading. value = true }
+            else -> LogUtil.e(javaClass, "Invalid payment task in this context")
+        }
+    }
+
+    fun finishActivityWithDelay() {
+        val sub = Completable.fromAction { Completable.complete() }
+                .delay(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { finish.value = Unit },
+                        { LogUtil.e(javaClass, "Error while finishing activity with delay $it") }
+                )
+
+        subscriptions.add(sub)
     }
 
     override fun onCleared() {

@@ -358,4 +358,5 @@
     <string name="send_max_amount_message">Final transaction amount and network fees will be shown on the next screen</string>
     <string name="wallet_address_dialog_message">Share your public wallet address to receive Ether and tokens.</string>
     <string name="share">Share</string>
+    <string name="transaction_submitted">Transaction submitted</string>
 </resources>

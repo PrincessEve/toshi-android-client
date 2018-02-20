@@ -50,8 +50,9 @@ import kotlinx.android.synthetic.main.fragment_payment_confirmation.*
 class PaymentConfirmationFragment : BottomSheetDialogFragment() {
 
     private lateinit var viewModel: PaymentConfirmationViewModel
-    private lateinit var onPaymentApprovedListener: (PaymentTask) -> Unit
+    private var onPaymentApprovedListener: ((PaymentTask) -> Unit)? = null
     private var onPaymentCanceledListener: ((String?) -> Unit)? = null
+    private var onFinishedListener: (() -> Unit)? = null
     private var approvedPayment = false
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, inState: Bundle?): View? {
@@ -91,13 +92,13 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
     }
 
     private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this).get(PaymentConfirmationViewModel::class.java)
+        viewModel = ViewModelProviders.of(activity).get(PaymentConfirmationViewModel::class.java)
         viewModel.init(arguments)
     }
 
     private fun initClickListeners() {
         closeButton.setOnClickListener { handlePaymentCanceled() }
-        pay.setOnButtonClickListener { handlePaymentApproved() }
+        pay.setOnClickListener { handlePaymentApproved() }
     }
 
     private fun handlePaymentCanceled() {
@@ -106,12 +107,15 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
     }
 
     private fun handlePaymentApproved() {
-        val paymentTask = viewModel.paymentTask.value
-        paymentTask?.let {
-            approvedPayment = true
-            onPaymentApprovedListener(paymentTask)
-            dismiss()
-        }
+        val paymentTask = viewModel.paymentTask.value ?: return
+        if (onPaymentApprovedListener != null) approveAndDismiss(paymentTask)
+        else viewModel.sendPayment(paymentTask)
+    }
+
+    private fun approveAndDismiss(paymentTask: PaymentTask) {
+        approvedPayment = true
+        onPaymentApprovedListener?.invoke(paymentTask)
+        dismiss()
     }
 
     private fun setTitle() {
@@ -122,7 +126,7 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
     }
 
     private fun initObservers() {
-        viewModel.isGasPriceLoading.observe(this, Observer {
+        viewModel.isLoading.observe(this, Observer {
             isLoading -> isLoading?.let { handleLoadingVisibility(it) }
         })
         viewModel.balance.observe(this, Observer {
@@ -134,12 +138,20 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
         viewModel.paymentTaskError.observe(this, Observer {
             paymentTaskError -> paymentTaskError?.let { handlePaymentTaskError() }
         })
+        viewModel.paymentSuccess.observe(this, Observer {
+            if (it != null) handleSuccessfulPayment()
+        })
+        viewModel.paymentError.observe(this, Observer {
+            if (it != null) handlePaymentError()
+        })
+        viewModel.finish.observe(this, Observer {
+            if (it != null) finishAndDismiss()
+        })
     }
 
     private fun handleLoadingVisibility(isLoading: Boolean) {
-        loadingText.isVisible(isLoading)
-        if (isLoading) pay.startLoading()
-        else pay.stopLoading()
+        loadingOverlay.isVisible(isLoading)
+        loadingSpinner.isVisible(isLoading)
     }
 
     private fun handleBalance(currentBalance: Balance) {
@@ -246,8 +258,25 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
 
     private fun handlePaymentTaskError() {
         ethPaymentInfoWrapper.isVisible(false)
-        pay.disablePayButton()
+        disablePayButton()
         setStatusMessage(getString(R.string.gas_price_error), R.color.error_color)
+    }
+
+    private fun handleSuccessfulPayment() {
+        loadingOverlay.isVisible(true)
+        successfulState.isVisible(true)
+        viewModel.finishActivityWithDelay()
+    }
+
+    private fun handlePaymentError() {
+        loadingOverlay.isVisible(false)
+        successfulState.isVisible(false)
+    }
+
+    private fun finishAndDismiss() {
+        approvedPayment = true
+        onFinishedListener?.invoke()
+        dismiss()
     }
 
     private fun compareTotalAmountAndBalance() {
@@ -257,14 +286,24 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
             val currentBalanceEth = EthUtil.weiToEth(currentBalance.unconfirmedBalance)
             val totalAmountEth = totalAmount.totalAmount.ethAmount
             if (currentBalanceEth >= totalAmountEth) {
-                pay.enablePayButton()
+                enablePayButton()
                 return
             } else {
                 renderInsufficientBalance()
             }
         }
 
-        pay.disablePayButton()
+        disablePayButton()
+    }
+
+    private fun disablePayButton() {
+        pay.isClickable = false
+        pay.setBackgroundResource(R.drawable.background_with_radius_disabled)
+    }
+
+    private fun enablePayButton() {
+        pay.isClickable = true
+        pay.setBackgroundResource(R.drawable.background_with_radius_primary_color)
     }
 
     private fun renderInsufficientBalance() {
@@ -280,8 +319,16 @@ class PaymentConfirmationFragment : BottomSheetDialogFragment() {
         statusMessage.setTextColor(getColor(color))
     }
 
-    fun setOnPaymentConfirmationApprovedListener(listener: (PaymentTask) -> Unit): PaymentConfirmationFragment {
+    // Set the approve listener to null if you want PaymentConfirmation to send the transaction
+    // or you can handle it by yourself.
+    fun setOnPaymentConfirmationApprovedListener(listener: ((PaymentTask) -> Unit)?): PaymentConfirmationFragment {
         this.onPaymentApprovedListener = listener
+        return this
+    }
+
+    // Called when the transaction is finished and successful
+    fun setOnPaymentConfirmationFinishedListener(listener: (() -> Unit)?): PaymentConfirmationFragment {
+        this.onFinishedListener = listener
         return this
     }
 
